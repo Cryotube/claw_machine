@@ -19,6 +19,6 @@
 | Analytics | GDScript stub logging locally | Future-proof instrumentation | Thread-safe queue writes to `user://analytics.log` |
 
 ## Developer Process
-- Always execute headless Godot test runs through the wrapper: `./scripts/godot-cli.sh --headless --run res://tests/gut/test_runner.tscn`. This guarantees consistent project paths and aligns with CI expectations.
-- On any crash, freeze, or non-zero exit, inspect the terminal output for parse/compiler errors and resolve them before retrying. Do not assume the failure is a runtime issue until syntax errors are cleared.
-- Re-run the wrapper command after fixes to confirm the project loads and tests execute cleanly, then proceed with profiling or additional validation.
+- Run `./scripts/run-headless-checks.sh` to execute both the GUT suite and the performance benchmark (wrapper uses `scripts/godot-cli.sh` under the hood). This keeps local checks identical to CI (`.github/workflows/godot-headless.yml`).
+- Wire the script into automation (e.g., `pre-push` hook: `printf '#!/usr/bin/env bash\n./scripts/run-headless-checks.sh\n' > .git/hooks/pre-push && chmod +x .git/hooks/pre-push`) so regressions are caught before merging.
+- On any crash, freeze, or non-zero exit, inspect the terminal output for parse/compiler errors and resolve them before retrying. Re-run the script after fixes to verify clean headless runs before moving on to profiling or exports.

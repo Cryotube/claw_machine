@@ -1,0 +1,27 @@
+name: Godot Headless Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GODOT_BIN: godot
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Godot
+        uses: godotengine/setup-godot@v2
+        with:
+          version: '4.2.2'
+          mono: false
+
+      - name: Run unit tests
+        run: ./scripts/godot-cli.sh --headless --run res://tests/gut/test_runner.tscn
+
+      - name: Run performance benchmark
+        run: ./scripts/godot-cli.sh --headless --run res://tests/perf/customer_queue_benchmark.tscn
