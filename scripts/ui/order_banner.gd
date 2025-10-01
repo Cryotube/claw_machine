@@ -3,6 +3,7 @@ class_name OrderBanner
 
 const OrderRequestDto = preload("res://scripts/dto/order_request_dto.gd")
 const LocalizationService = preload("res://autoload/localization_service.gd")
+const OrderAssetLibrary := preload("res://scripts/services/order_asset_library.gd")
 
 @onready var _item_label: Label = %ItemLabel
 @onready var _hint_label: RichTextLabel = %HintLabel
@@ -26,7 +27,7 @@ func show_order(order: OrderRequestDto) -> void:
     var hint_text: String = localization.get_text(hint_key) if localization else String(hint_key)
     _item_label.text = item_text
     _hint_label.text = hint_text
-    _apply_icon(order.icon_texture, order.icon_path)
+    _apply_icon(order.icon_texture, order.icon_path, order.descriptor_id)
     _failure_active = false
     if has_meta("failure_active"):
         set_meta("failure_active", false)
@@ -61,19 +62,12 @@ func trigger_failure_feedback() -> void:
 func is_failure_active() -> bool:
     return _failure_active
 
-func _apply_icon(texture: Texture2D, path: String) -> void:
-    if texture:
-        _current_icon = texture
-        _icon_texture_rect.texture = texture
-        return
-    _current_icon = null
-    if path.is_empty():
-        _icon_texture_rect.texture = null
-        return
-    if ResourceLoader.exists(path):
-        _icon_texture_rect.texture = load(path)
-    else:
-        _icon_texture_rect.texture = null
+func _apply_icon(texture: Texture2D, path: String, descriptor_id: StringName) -> void:
+    var resolved: Texture2D = texture
+    if resolved == null:
+        resolved = OrderAssetLibrary.get_icon(descriptor_id, path)
+    _current_icon = resolved
+    _icon_texture_rect.texture = resolved
 
 func debug_get_active_order_id() -> StringName:
     return _active_order_id

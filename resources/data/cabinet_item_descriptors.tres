@@ -1,0 +1,108 @@
+[gd_resource type="Resource" load_steps=33 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/cabinet_item_catalog.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/resources/cabinet_item_descriptor.gd" id="2"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_SalmonFillet.tscn" id="3"]
+[ext_resource type="Texture2D" path="res://resources/icons/salmon_icon.tres" id="4"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_TunaSteak.tscn" id="5"]
+[ext_resource type="Texture2D" path="res://resources/icons/tuna_icon.tres" id="6"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_Shrimp.tscn" id="7"]
+[ext_resource type="Texture2D" path="res://resources/icons/shrimp_icon.tres" id="8"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_Lobster.tscn" id="9"]
+[ext_resource type="Texture2D" path="res://resources/icons/lobster_icon.tres" id="10"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_Crab.tscn" id="11"]
+[ext_resource type="Texture2D" path="res://resources/icons/crab_icon.tres" id="12"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_Clam.tscn" id="13"]
+[ext_resource type="Texture2D" path="res://resources/icons/clam_icon.tres" id="14"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_Octopus.tscn" id="15"]
+[ext_resource type="Texture2D" path="res://resources/icons/octopus_icon.tres" id="16"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_Squid.tscn" id="17"]
+[ext_resource type="Texture2D" path="res://resources/icons/squid_icon.tres" id="18"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_Scallop.tscn" id="19"]
+[ext_resource type="Texture2D" path="res://resources/icons/scallop_icon.tres" id="20"]
+[ext_resource type="PackedScene" path="res://resources/meshes/seafood/Seafood_SeaUrchin.tscn" id="21"]
+[ext_resource type="Texture2D" path="res://resources/icons/urchin_icon.tres" id="22"]
+
+[sub_resource type="Resource" id="1" script=ExtResource("2")]
+descriptor_id = "salmon"
+display_name = "Salmon Fillet"
+scene = ExtResource("3")
+icon = ExtResource("4")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="2" script=ExtResource("2")]
+descriptor_id = "tuna"
+display_name = "Tuna Steak"
+scene = ExtResource("5")
+icon = ExtResource("6")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="3" script=ExtResource("2")]
+descriptor_id = "shrimp"
+display_name = "Shrimp Platter"
+scene = ExtResource("7")
+icon = ExtResource("8")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="4" script=ExtResource("2")]
+descriptor_id = "lobster"
+display_name = "Lobster Tail"
+scene = ExtResource("9")
+icon = ExtResource("10")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="5" script=ExtResource("2")]
+descriptor_id = "crab"
+display_name = "Crab Legs"
+scene = ExtResource("11")
+icon = ExtResource("12")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="6" script=ExtResource("2")]
+descriptor_id = "clam"
+display_name = "Clam Chowder Kit"
+scene = ExtResource("13")
+icon = ExtResource("14")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="7" script=ExtResource("2")]
+descriptor_id = "octopus"
+display_name = "Octopus Tentacle"
+scene = ExtResource("15")
+icon = ExtResource("16")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="8" script=ExtResource("2")]
+descriptor_id = "squid"
+display_name = "Squid Rings"
+scene = ExtResource("17")
+icon = ExtResource("18")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="9" script=ExtResource("2")]
+descriptor_id = "scallop"
+display_name = "Scallop Tray"
+scene = ExtResource("19")
+icon = ExtResource("20")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[sub_resource type="Resource" id="10" script=ExtResource("2")]
+descriptor_id = "urchin"
+display_name = "Sea Urchin"
+scene = ExtResource("21")
+icon = ExtResource("22")
+highlight_palette = "default"
+anchor_offset = Vector3(0, 0, 0)
+
+[resource]
+script = ExtResource("1")
+descriptors = [SubResource("1"), SubResource("2"), SubResource("3"), SubResource("4"), SubResource("5"), SubResource("6"), SubResource("7"), SubResource("8"), SubResource("9"), SubResource("10")]

@@ -6,6 +6,7 @@ const SignalHub := preload("res://autoload/signal_hub.gd")
 const AudioDirector := preload("res://autoload/audio_director.gd")
 const OrderRequestDto := preload("res://scripts/dto/order_request_dto.gd")
 const OrderBanner := preload("res://scripts/ui/order_banner.gd")
+const OrderAssetLibrary := preload("res://scripts/services/order_asset_library.gd")
 
 @export var order_banner: OrderBanner
 
@@ -35,7 +36,7 @@ func _on_service_visualized(order: OrderRequestDto) -> void:
     if order == null:
         return
     _cache_order_visual(order)
-    _emit_visual(order.descriptor_id, _order_icons.get(order.order_id, null), order.order_id)
+    _emit_visual(order.descriptor_id, order.order_id)
     if order_banner:
         order_banner.show_order(order)
 
@@ -56,9 +57,7 @@ func _on_service_mismatch(order_id: StringName, descriptor_id: StringName) -> vo
         _audio.play_event(StringName("order_mismatch_warning"))
     if order_banner:
         order_banner.trigger_failure_feedback()
-    var icon: Texture2D = _order_icons.get(order_id, null)
-    if icon and _signal_hub:
-        _emit_visual(descriptor_id, icon, order_id)
+    _emit_visual(descriptor_id, order_id)
 
 func notify_wrong_item(order_id: StringName) -> void:
     var descriptor_id: StringName = _order_descriptors.get(order_id, StringName())
@@ -70,19 +69,13 @@ func _cache_order_visual(order: OrderRequestDto) -> void:
     var descriptor_id: StringName = order.descriptor_id
     var order_id: StringName = order.order_id
     _order_descriptors[order_id] = descriptor_id
-    _order_icons[order_id] = _resolve_icon(order)
+    var icon: Texture2D = order.icon_texture
+    if icon == null:
+        icon = OrderAssetLibrary.get_icon(descriptor_id, order.icon_path)
+    _order_icons[order_id] = icon
 
-func _resolve_icon(order: OrderRequestDto) -> Texture2D:
-    if order.icon_texture:
-        return order.icon_texture
-    if order.icon_path.is_empty():
-        return null
-    if ResourceLoader.exists(order.icon_path):
-        var res := load(order.icon_path)
-        if res is Texture2D:
-            return res
-    return null
-
-func _emit_visual(descriptor_id: StringName, icon: Texture2D, order_id: StringName) -> void:
-    if _signal_hub:
-        _signal_hub.broadcast_visualized(descriptor_id, icon, order_id)
+func _emit_visual(descriptor_id: StringName, order_id: StringName) -> void:
+    if _signal_hub == null:
+        return
+    var icon: Texture2D = _order_icons.get(order_id, null)
+    _signal_hub.broadcast_visualized(descriptor_id, icon, order_id)

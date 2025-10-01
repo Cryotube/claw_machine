@@ -1,0 +1,138 @@
+[gd_resource type="Resource" load_steps=23 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/order_catalog.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/resources/order_definition.gd" id="2"]
+[ext_resource type="Texture2D" path="res://resources/icons/salmon_icon.tres" id="3"]
+[ext_resource type="Texture2D" path="res://resources/icons/tuna_icon.tres" id="4"]
+[ext_resource type="Texture2D" path="res://resources/icons/shrimp_icon.tres" id="5"]
+[ext_resource type="Texture2D" path="res://resources/icons/lobster_icon.tres" id="6"]
+[ext_resource type="Texture2D" path="res://resources/icons/crab_icon.tres" id="7"]
+[ext_resource type="Texture2D" path="res://resources/icons/clam_icon.tres" id="8"]
+[ext_resource type="Texture2D" path="res://resources/icons/octopus_icon.tres" id="9"]
+[ext_resource type="Texture2D" path="res://resources/icons/squid_icon.tres" id="10"]
+[ext_resource type="Texture2D" path="res://resources/icons/scallop_icon.tres" id="11"]
+[ext_resource type="Texture2D" path="res://resources/icons/urchin_icon.tres" id="12"]
+
+[sub_resource type="Resource" id="1" script=ExtResource("2")]
+order_id = "order_salmon_combo"
+descriptor_id = "salmon"
+localization_key = "order_salmon_combo"
+tutorial_hint_key = "tutorial_hint_salmon"
+icon = ExtResource("3")
+icon_path = "res://resources/icons/salmon_icon.tres"
+highlight_palette = "default"
+patience_duration = 12.0
+warning_threshold = 0.35
+critical_threshold = 0.15
+
+[sub_resource type="Resource" id="2" script=ExtResource("2")]
+order_id = "order_tuna_deluxe"
+descriptor_id = "tuna"
+localization_key = "order_tuna_deluxe"
+tutorial_hint_key = "tutorial_hint_tuna"
+icon = ExtResource("4")
+icon_path = "res://resources/icons/tuna_icon.tres"
+highlight_palette = "default"
+patience_duration = 11.0
+warning_threshold = 0.32
+critical_threshold = 0.14
+
+[sub_resource type="Resource" id="3" script=ExtResource("2")]
+order_id = "order_shrimp_skewer"
+descriptor_id = "shrimp"
+localization_key = "order_shrimp_skewer"
+tutorial_hint_key = "tutorial_hint_shrimp"
+icon = ExtResource("5")
+icon_path = "res://resources/icons/shrimp_icon.tres"
+highlight_palette = "default"
+patience_duration = 13.0
+warning_threshold = 0.36
+critical_threshold = 0.16
+
+[sub_resource type="Resource" id="4" script=ExtResource("2")]
+order_id = "order_lobster_feast"
+descriptor_id = "lobster"
+localization_key = "order_lobster_feast"
+tutorial_hint_key = "tutorial_hint_lobster"
+icon = ExtResource("6")
+icon_path = "res://resources/icons/lobster_icon.tres"
+highlight_palette = "default"
+patience_duration = 14.0
+warning_threshold = 0.33
+critical_threshold = 0.15
+
+[sub_resource type="Resource" id="5" script=ExtResource("2")]
+order_id = "order_crab_roll"
+descriptor_id = "crab"
+localization_key = "order_crab_roll"
+tutorial_hint_key = "tutorial_hint_crab"
+icon = ExtResource("7")
+icon_path = "res://resources/icons/crab_icon.tres"
+highlight_palette = "default"
+patience_duration = 12.5
+warning_threshold = 0.34
+critical_threshold = 0.16
+
+[sub_resource type="Resource" id="6" script=ExtResource("2")]
+order_id = "order_clam_chowder"
+descriptor_id = "clam"
+localization_key = "order_clam_chowder"
+tutorial_hint_key = "tutorial_hint_clam"
+icon = ExtResource("8")
+icon_path = "res://resources/icons/clam_icon.tres"
+highlight_palette = "default"
+patience_duration = 15.0
+warning_threshold = 0.37
+critical_threshold = 0.18
+
+[sub_resource type="Resource" id="7" script=ExtResource("2")]
+order_id = "order_octopus_plate"
+descriptor_id = "octopus"
+localization_key = "order_octopus_plate"
+tutorial_hint_key = "tutorial_hint_octopus"
+icon = ExtResource("9")
+icon_path = "res://resources/icons/octopus_icon.tres"
+highlight_palette = "protan"
+patience_duration = 13.5
+warning_threshold = 0.36
+critical_threshold = 0.18
+
+[sub_resource type="Resource" id="8" script=ExtResource("2")]
+order_id = "order_squid_rings"
+descriptor_id = "squid"
+localization_key = "order_squid_rings"
+tutorial_hint_key = "tutorial_hint_squid"
+icon = ExtResource("10")
+icon_path = "res://resources/icons/squid_icon.tres"
+highlight_palette = "deutan"
+patience_duration = 11.5
+warning_threshold = 0.33
+critical_threshold = 0.14
+
+[sub_resource type="Resource" id="9" script=ExtResource("2")]
+order_id = "order_scallop_platter"
+descriptor_id = "scallop"
+localization_key = "order_scallop_platter"
+tutorial_hint_key = "tutorial_hint_scallop"
+icon = ExtResource("11")
+icon_path = "res://resources/icons/scallop_icon.tres"
+highlight_palette = "default"
+patience_duration = 12.2
+warning_threshold = 0.35
+critical_threshold = 0.16
+
+[sub_resource type="Resource" id="10" script=ExtResource("2")]
+order_id = "order_urchin_uni"
+descriptor_id = "urchin"
+localization_key = "order_urchin_uni"
+tutorial_hint_key = "tutorial_hint_urchin"
+icon = ExtResource("12")
+icon_path = "res://resources/icons/urchin_icon.tres"
+highlight_palette = "tritan"
+patience_duration = 10.8
+warning_threshold = 0.3
+critical_threshold = 0.12
+
+[resource]
+script = ExtResource("1")
+orders = [SubResource("1"), SubResource("2"), SubResource("3"), SubResource("4"), SubResource("5"), SubResource("6"), SubResource("7"), SubResource("8"), SubResource("9"), SubResource("10")]

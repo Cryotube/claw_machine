@@ -8,9 +8,9 @@ script = ExtResource("1")
 highlight_pool_scene = ExtResource("2")
 marker_root_path = NodePath("Anchors")
 icon_billboard_path = NodePath("IconBillboard")
-descriptor_keys = PackedStringArray("salmon", "tuna", "shrimp")
-marker_paths = [NodePath("Anchors/Salmon"), NodePath("Anchors/Tuna"), NodePath("Anchors/Shrimp")]
-pool_size = 3
+descriptor_keys = PackedStringArray()
+marker_paths = []
+pool_size = 6
 
 [node name="IconBillboard" type="Sprite3D" parent="."]
 texture_filter = 1

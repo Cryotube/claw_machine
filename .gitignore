@@ -1,3 +1,6 @@
 # BMAD (local only)
 .bmad-core/
 .bmad-*/
+
+# Local test artifacts
+artifacts/

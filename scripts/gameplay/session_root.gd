@@ -9,12 +9,15 @@ const CustomerQueue = preload("res://scripts/gameplay/customer_queue.gd")
 const PatienceMeter = preload("res://scripts/ui/patience_meter.gd")
 const OrderBanner = preload("res://scripts/ui/order_banner.gd")
 const AudioDirector = preload("res://autoload/audio_director.gd")
+const OrderCatalog := preload("res://scripts/resources/order_catalog.gd")
+const ORDER_CATALOG: OrderCatalog = preload("res://resources/data/order_catalog.tres")
 
 @onready var _queue: CustomerQueue = %CustomerQueue
 @onready var _order_banner: OrderBanner = %OrderBanner
 @onready var _patience_meter: PatienceMeter = %PatienceMeter
 
 var _active_order_id: StringName = StringName()
+var _debug_order_index: int = 0
 
 func _ready() -> void:
     _connect_signals()
@@ -82,16 +85,23 @@ func _on_patience_stage_changed(order_id: StringName, stage: int) -> void:
                 audio.play_event(StringName("patience_critical"))
 
 func _spawn_debug_order() -> void:
+    if ORDER_CATALOG == null or ORDER_CATALOG.orders.is_empty():
+        return
+    var definition := ORDER_CATALOG.get_next(_debug_order_index)
+    _debug_order_index += 1
+    if definition == null:
+        return
     var dto := OrderRequestDto.new()
-    dto.order_id = StringName("debug_order_%d" % Time.get_ticks_msec())
-    dto.seafood_name = "order_salmon_nigiri"
-    dto.icon_path = ""
-    dto.tutorial_hint_key = StringName("tutorial_hint_default")
-    dto.descriptor_id = StringName("salmon")
-    dto.highlight_palette = StringName("default")
-    dto.patience_duration = 12.0
-    dto.warning_threshold = 0.4
-    dto.critical_threshold = 0.2
+    dto.order_id = StringName("debug_%s_%d" % [String(definition.order_id), Time.get_ticks_msec()])
+    dto.seafood_name = String(definition.localization_key)
+    dto.icon_path = definition.icon_path
+    dto.tutorial_hint_key = definition.tutorial_hint_key
+    dto.descriptor_id = definition.descriptor_id
+    dto.highlight_palette = definition.highlight_palette
+    dto.icon_texture = definition.icon
+    dto.patience_duration = definition.patience_duration
+    dto.warning_threshold = definition.warning_threshold
+    dto.critical_threshold = definition.critical_threshold
     var service := OrderService.get_instance()
     if service:
         service.request_order(dto)

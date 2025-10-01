@@ -20,5 +20,6 @@
 
 ## Developer Process
 - Run `./scripts/run-headless-checks.sh` to execute both the GUT suite and the performance benchmark (wrapper uses `scripts/godot-cli.sh` under the hood). This keeps local checks identical to CI (`.github/workflows/godot-headless.yml`).
+- macOS Gatekeeper can block the bundled Godot binary inside the sandbox. Workaround: copy `/Applications/Godot.app` into `artifacts/godot/`, strip quarantine with `xattr -dr com.apple.quarantine artifacts/godot/Godot.app`, then run the wrapper with `GODOT_BIN=$PWD/artifacts/godot/Godot.app/Contents/MacOS/Godot` and add `--log-file "$PWD/artifacts/godot-cli.log"` so logging targets a writable path.
 - Wire the script into automation (e.g., `pre-push` hook: `printf '#!/usr/bin/env bash\n./scripts/run-headless-checks.sh\n' > .git/hooks/pre-push && chmod +x .git/hooks/pre-push`) so regressions are caught before merging.
 - On any crash, freeze, or non-zero exit, inspect the terminal output for parse/compiler errors and resolve them before retrying. Re-run the script after fixes to verify clean headless runs before moving on to profiling or exports.
