@@ -1,0 +1,28 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly, 
+; since the parameters that go here are not all obvious.
+
+config_version=5
+
+[application]
+config/name="Claw Machine"
+config/description="Prototype claw machine order queue"
+run/main_scene="res://scenes/session/SessionRoot.tscn"
+config/features=PackedStringArray("4.5", "ForwardPlus")
+
+[autoload]
+OrderService="*res://autoload/order_service.gd"
+SignalHub="*res://autoload/signal_hub.gd"
+LocalizationService="*res://autoload/localization_service.gd"
+AudioDirector="*res://autoload/audio_director.gd"
+Settings="*res://autoload/settings.gd"
+
+[display]
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[input]
+serve_current_order={"deadzone":0.2,"events":[{"type":"joy_button","device":-1,"button_index":0},{"type":"key","physical_keycode":4194326}]}
+debug_trigger_order={"deadzone":0.2,"events":[{"type":"joy_button","device":-1,"button_index":1},{"type":"key","physical_keycode":4194325}]}
+
