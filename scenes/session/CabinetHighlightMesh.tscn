@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cabinethighlightmesh" load_steps=3]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/cabinet_highlight_theme.tres" id="1"]
+
+[sub_resource type="SphereMesh" id="2"]
+
+[node name="CabinetHighlightMesh" type="MeshInstance3D"]
+mesh = SubResource("2")
+material_override = ExtResource("1")
+visibility_range_end = 100.0

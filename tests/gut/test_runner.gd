@@ -4,6 +4,8 @@ const GutTest = preload("res://tests/gut/gut_stub.gd")
 const TEST_PATHS := [
     "res://tests/gut/unit/test_customer_queue.gd",
     "res://tests/gut/unit/test_order_banner.gd",
+    "res://tests/gut/unit/test_cabinet_highlight_controller.gd",
+    "res://tests/gut/unit/test_order_visual_sync.gd",
 ]
 
 var _total_failures: int = 0

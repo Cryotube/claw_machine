@@ -55,7 +55,6 @@ func _disconnect_signals() -> void:
 
 func _on_order_requested(order: OrderRequestDto) -> void:
     _active_order_id = order.order_id
-    _order_banner.show_order(order)
     _patience_meter.bind_order(order.order_id, order.patience_duration, order.warning_threshold, order.critical_threshold)
     _patience_meter.set_stage(PatienceMeter.PATIENCE_STAGE_PENDING)
 
@@ -63,7 +62,6 @@ func _on_order_cleared(order_id: StringName) -> void:
     if order_id != _active_order_id:
         return
     _active_order_id = StringName()
-    _order_banner.clear_order()
     _patience_meter.clear()
 
 func _on_patience_updated(order_id: StringName, normalized_remaining: float) -> void:
@@ -89,6 +87,8 @@ func _spawn_debug_order() -> void:
     dto.seafood_name = "order_salmon_nigiri"
     dto.icon_path = ""
     dto.tutorial_hint_key = StringName("tutorial_hint_default")
+    dto.descriptor_id = StringName("salmon")
+    dto.highlight_palette = StringName("default")
     dto.patience_duration = 12.0
     dto.warning_threshold = 0.4
     dto.critical_threshold = 0.2

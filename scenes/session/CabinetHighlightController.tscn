@@ -1,0 +1,29 @@
+[gd_scene format=3 load_steps=4 uid="uid://cabinetcontroller"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/cabinet_highlight_controller.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/session/CabinetHighlightMesh.tscn" id="2"]
+
+[node name="CabinetHighlightController" type="Node3D"]
+script = ExtResource("1")
+highlight_pool_scene = ExtResource("2")
+marker_root_path = NodePath("Anchors")
+icon_billboard_path = NodePath("IconBillboard")
+descriptor_keys = PackedStringArray("salmon", "tuna", "shrimp")
+marker_paths = [NodePath("Anchors/Salmon"), NodePath("Anchors/Tuna"), NodePath("Anchors/Shrimp")]
+pool_size = 3
+
+[node name="IconBillboard" type="Sprite3D" parent="."]
+texture_filter = 1
+pixel_size = 0.05
+
+[node name="Anchors" type="Node3D" parent="."]
+
+[node name="Salmon" type="Marker3D" parent="Anchors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Tuna" type="Marker3D" parent="Anchors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0.5, 0)
+
+[node name="Shrimp" type="Marker3D" parent="Anchors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0.5, 0)
+

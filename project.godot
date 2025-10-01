@@ -16,6 +16,7 @@ SignalHub="*res://autoload/signal_hub.gd"
 LocalizationService="*res://autoload/localization_service.gd"
 AudioDirector="*res://autoload/audio_director.gd"
 Settings="*res://autoload/settings.gd"
+AccessibilityService="*res://autoload/accessibility_service.gd"
 
 [display]
 window/stretch/mode="canvas_items"
@@ -25,4 +26,3 @@ window/handheld/orientation=1
 [input]
 serve_current_order={"deadzone":0.2,"events":[{"type":"joy_button","device":-1,"button_index":0},{"type":"key","physical_keycode":4194326}]}
 debug_trigger_order={"deadzone":0.2,"events":[{"type":"joy_button","device":-1,"button_index":1},{"type":"key","physical_keycode":4194325}]}
-

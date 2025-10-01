@@ -9,6 +9,8 @@ const LocalizationService = preload("res://autoload/localization_service.gd")
 @onready var _icon_texture_rect: TextureRect = %IconTexture
 
 var _active_order_id: StringName = StringName()
+var _failure_active: bool = false
+var _current_icon: Texture2D
 
 func _ready() -> void:
     hide()
@@ -24,7 +26,10 @@ func show_order(order: OrderRequestDto) -> void:
     var hint_text: String = localization.get_text(hint_key) if localization else String(hint_key)
     _item_label.text = item_text
     _hint_label.text = hint_text
-    _apply_icon(order.icon_path)
+    _apply_icon(order.icon_texture, order.icon_path)
+    _failure_active = false
+    if has_meta("failure_active"):
+        set_meta("failure_active", false)
     show()
 
 func clear_order() -> void:
@@ -32,6 +37,10 @@ func clear_order() -> void:
     _item_label.text = ""
     _hint_label.text = ""
     _icon_texture_rect.texture = null
+    _current_icon = null
+    _failure_active = false
+    if has_meta("failure_active"):
+        set_meta("failure_active", false)
     hide()
 
 func update_safe_area(is_portrait: bool, padding: Vector2) -> void:
@@ -45,7 +54,19 @@ func update_safe_area(is_portrait: bool, padding: Vector2) -> void:
     offset_right = -margin.x
     offset_bottom = 0.0
 
-func _apply_icon(path: String) -> void:
+func trigger_failure_feedback() -> void:
+    _failure_active = true
+    set_meta("failure_active", true)
+
+func is_failure_active() -> bool:
+    return _failure_active
+
+func _apply_icon(texture: Texture2D, path: String) -> void:
+    if texture:
+        _current_icon = texture
+        _icon_texture_rect.texture = texture
+        return
+    _current_icon = null
     if path.is_empty():
         _icon_texture_rect.texture = null
         return
@@ -56,3 +77,6 @@ func _apply_icon(path: String) -> void:
 
 func debug_get_active_order_id() -> StringName:
     return _active_order_id
+
+func debug_get_current_icon() -> Texture2D:
+    return _current_icon

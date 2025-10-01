@@ -1,0 +1,9 @@
+[gd_scene format=3 load_steps=2 uid="uid://clawcabinet"]
+
+[ext_resource type="PackedScene" path="res://scenes/session/CabinetHighlightController.tscn" id="1"]
+
+[node name="ClawCabinet" type="Node3D"]
+
+[node name="CabinetHighlightController" parent="." instance=ExtResource("1")]
+unique_name_in_owner = true
+
