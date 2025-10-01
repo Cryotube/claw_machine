@@ -1,0 +1,81 @@
+[gd_scene format=3 load_steps=12]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/metal_trim_material.tres" id="1"]
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/glass_material.tres" id="2"]
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/primary_material.tres" id="3"]
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/accent_material.tres" id="4"]
+
+[sub_resource type="BoxMesh" id="1"]
+size = Vector3(2.2, 0.2, 2.2)
+
+[sub_resource type="BoxMesh" id="2"]
+size = Vector3(0.6, 0.3, 0.6)
+
+[sub_resource type="CylinderMesh" id="3"]
+top_radius = 0.06
+bottom_radius = 0.06
+height = 1.4
+
+[sub_resource type="CapsuleMesh" id="4"]
+radius = 0.18
+height = 0.35
+
+[sub_resource type="CapsuleMesh" id="5"]
+radius = 0.05
+height = 0.45
+
+[sub_resource type="BoxMesh" id="6"]
+size = Vector3(2.4, 3.6, 2.4)
+
+[sub_resource type="BoxMesh" id="7"]
+size = Vector3(2.6, 0.1, 2.6)
+
+
+[node name="ClawRigAssembly" type="Node3D"]
+
+[node name="Frame" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 0.1, 0, 0, 0, 1.2, 0, 2.1, 0)
+mesh = SubResource("1")
+material_override = ExtResource("1")
+
+[node name="Carriage" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(0.4, 0, 0, 0, 0.25, 0, 0, 0, 0.4, 0, -0.35, 0)
+mesh = SubResource("2")
+material_override = ExtResource("3")
+
+[node name="Cable" type="MeshInstance3D" parent="Carriage"]
+transform = Transform3D(0.08, 0, 0, 0, 1.2, 0, 0, 0, 0.08, 0, -0.75, 0)
+mesh = SubResource("3")
+material_override = ExtResource("1")
+
+[node name="ClawBody" type="MeshInstance3D" parent="Cable"]
+transform = Transform3D(0.22, 0, 0, 0, 0.22, 0, 0, 0, 0.35, 0, -0.8, 0)
+mesh = SubResource("4")
+material_override = ExtResource("1")
+
+[node name="Finger1" type="MeshInstance3D" parent="ClawBody"]
+transform = Transform3D(0.03, 0, 0, 0, 0.4, 0.16, 0, -0.16, 0.4, -0.22, -0.32, 0)
+mesh = SubResource("5")
+material_override = ExtResource("4")
+
+[node name="Finger2" type="MeshInstance3D" parent="ClawBody"]
+transform = Transform3D(0.03, 0, 0, 0, 0.4, -0.16, 0, 0.16, 0.4, 0.22, -0.32, 0)
+mesh = SubResource("5")
+material_override = ExtResource("4")
+
+[node name="Finger3" type="MeshInstance3D" parent="ClawBody"]
+transform = Transform3D(0.03, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, -0.32, 0.26)
+mesh = SubResource("5")
+material_override = ExtResource("4")
+
+[node name="GlassBox" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.8, 0, 0, 0, 1.1, 0, 1.0, 0)
+mesh = SubResource("6")
+material_override = ExtResource("2")
+
+[node name="GlowStrip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.3, 0, 0, 0, 0.05, 0, 0, 0, 1.3, 0, 2.3, 0)
+mesh = SubResource("7")
+material_override = ExtResource("3")
+
+

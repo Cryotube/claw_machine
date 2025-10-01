@@ -1,0 +1,17 @@
+[gd_scene format=3 load_steps=3]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/seafood_tuna_material.tres" id="1"]
+
+[sub_resource type="CylinderMesh" id="1"]
+top_radius = 0.4
+bottom_radius = 0.4
+height = 0.6
+
+
+[node name="Seafood_TunaSteak" type="Node3D"]
+
+[node name="Cut" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+material_override = ExtResource("1")
+
+

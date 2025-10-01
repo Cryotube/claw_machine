@@ -1,0 +1,25 @@
+[gd_scene format=3 load_steps=4]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/seafood_shrimp_material.tres" id="1"]
+
+[sub_resource type="TorusMesh" id="1"]
+inner_radius = 0.2
+outer_radius = 0.35
+
+[sub_resource type="BoxMesh" id="2"]
+size = Vector3(0.36, 0.12, 0.24)
+
+
+[node name="Seafood_Shrimp" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+transform = Transform3D(0.28, 0, 0, 0, 0.28, 0.14, 0, -0.14, 0.28, 0, 0, 0)
+material_override = ExtResource("1")
+
+[node name="Tail" type="MeshInstance3D" parent="Body"]
+mesh = SubResource("2")
+transform = Transform3D(0.2, 0, 0, 0, 0.12, 0, 0, 0, 0.24, 0, -0.4, 0)
+material_override = ExtResource("1")
+
+

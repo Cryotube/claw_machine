@@ -1,6 +1,6 @@
 # UI Component System
 ## Component Library
-- `OrderBanner.tscn`, `PatienceMeter.tscn`, `VirtualJoystick.tscn`, `QuickToggle.tscn`, and `WaveSummaryCard.tscn` live under `res://ui/components/` with typed scripts.
+- `OrderBanner.tscn`, `PatienceMeter.tscn`, `VirtualJoystick.tscn`, `QuickToggle.tscn`, and `WaveSummaryCard.tscn` live under `res://ui/components/` today, tracked as part of the shared `/resources` asset library; reference these shipped scenes instead of adding placeholder anchors while the team migrates them to `res://resources/scenes/ui/components/`.
 - Components emit domain signals consumed by services via `SignalHub`.
 
 ## Data Binding

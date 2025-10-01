@@ -1,0 +1,21 @@
+[gd_scene format=3 load_steps=3]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/seafood_clam_material.tres" id="1"]
+
+[sub_resource type="SphereMesh" id="1"]
+radius = 0.35
+
+
+[node name="Seafood_Clam" type="Node3D"]
+
+[node name="ShellTop" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+transform = Transform3D(0.5, 0, 0, 0, 0.15, 0, 0, 0, 0.5, 0, 0.1, 0)
+material_override = ExtResource("1")
+
+[node name="ShellBottom" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+transform = Transform3D(0.5, 0, 0, 0, 0.15, 0, 0, 0, 0.5, 0, -0.1, 0)
+material_override = ExtResource("1")
+
+

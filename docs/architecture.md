@@ -233,7 +233,7 @@ Pause overlays operate orthogonally. `GameState` autoload implements the finite-
 
 ## UI Component System
 ### Component Library
-- `OrderBanner.tscn`, `PatienceMeter.tscn`, `VirtualJoystick.tscn`, `QuickToggle.tscn`, and `WaveSummaryCard.tscn` live under `res://ui/components/` with typed scripts.
+- `OrderBanner.tscn`, `PatienceMeter.tscn`, `VirtualJoystick.tscn`, `QuickToggle.tscn`, and `WaveSummaryCard.tscn` live under `res://ui/components/` today, tracked within the `/resources` asset library; hook up these shipped scenes instead of placeholders while migration to `res://resources/scenes/ui/components/` is underway.
 - Components emit domain signals consumed by services via `SignalHub`.
 
 ### Data Binding
@@ -308,7 +308,7 @@ Multiplayer is out of scope for the MVP. This section documents the decision so 
 
 ## Sprite Management
 ### Organization
-- Textures under `res://art/textures/` grouped by HUD, characters, FX.
+- Textures live under the shared `res://resources/` tree (for example `res://resources/textures/`) grouped by HUD, characters, and FX so feature branches can wire real atlases over placeholder anchors.
 - Atlases generated with Godot importer; naming convention `hud_atlas_*` for clarity.
 
 ### Optimization
@@ -317,7 +317,7 @@ Multiplayer is out of scope for the MVP. This section documents the decision so 
 
 ## Particle System Architecture
 ### Design
-- `ParticleSystem3D` resources for claw sparkles, freezer breath, and cat reactions stored under `res://fx/`.
+- `ParticleSystem3D` resources for claw sparkles, freezer breath, and cat reactions stored under `res://resources/vfx/` so systems drop in the shipped effects rather than empty nodes.
 - Emission triggered via `SignalHub` events to keep systems decoupled.
 
 ### Performance
@@ -329,6 +329,7 @@ Multiplayer is out of scope for the MVP. This section documents the decision so 
 ### System Design
 - AudioServer bus layout: `Master → {Music, SFX, VO, UI, Haptics}`. `AudioDirector` autoload manages routing and snapshots.
 - Haptics integrated via platform-specific stubs (CoreHaptics on iOS, vibration service on Android).
+- Audio assets live under `res://resources/audio/`; wire these banks directly so features play the shipped sounds instead of silent placeholders.
 
 ### Categories
 | Category | Examples | Notes |
@@ -351,7 +352,7 @@ Multiplayer is out of scope for the MVP. This section documents the decision so 
 
 ## Sound Bank Management
 ### Asset Organization
-- Assets under `res://audio/` categorised by `music/`, `sfx/`, `vo/`, `ui/` with metadata stored in `SoundBank.tres`.
+- Assets live under `res://resources/audio/` (categorised by `music/`, `sfx/`, `vo/`, `ui/`) with metadata stored in `SoundBank.tres` to make the shipped banks available during implementation.
 
 ### Streaming Strategy
 - Music streamed from OGG; SFX preloaded into memory.

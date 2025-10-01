@@ -1,0 +1,33 @@
+[gd_scene format=3 load_steps=6]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/wood_counter_material.tres" id="1"]
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/neutral_mid_material.tres" id="2"]
+
+[sub_resource type="BoxMesh" id="1"]
+size = Vector3(4.8, 0.2, 1.8)
+
+[sub_resource type="BoxMesh" id="2"]
+size = Vector3(4.8, 1.8, 0.16)
+
+[sub_resource type="BoxMesh" id="3"]
+size = Vector3(1.6, 0.04, 1.2)
+
+
+[node name="CounterAssembly" type="Node3D"]
+
+[node name="Countertop" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.4, 0, 0, 0, 0.18, 0, 0, 0, 0.9, 0, 1.1, 0)
+mesh = SubResource("1")
+material_override = ExtResource("1")
+
+[node name="FrontPanel" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.4, 0, 0, 0, 0.9, 0, 0, 0, 0.08, 0, 0.2, -0.86)
+mesh = SubResource("2")
+material_override = ExtResource("2")
+
+[node name="ServiceMat" type="MeshInstance3D" parent="Countertop"]
+transform = Transform3D(0.8, 0, 0, 0, 0.02, 0, 0, 0, 0.6, 0.2, 0.15, 0)
+mesh = SubResource("3")
+material_override = ExtResource("2")
+
+

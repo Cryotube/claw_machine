@@ -1,6 +1,6 @@
 # Sound Bank Management
 ## Asset Organization
-- Assets under `res://audio/` categorised by `music/`, `sfx/`, `vo/`, `ui/` with metadata stored in `SoundBank.tres`.
+- Assets live under `res://resources/audio/` (categorised by `music/`, `sfx/`, `vo/`, `ui/`) with metadata stored in `SoundBank.tres` so gameplay scenes can reference the shipped mixes directly.
 
 ## Streaming Strategy
 - Music streamed from OGG; SFX preloaded into memory.

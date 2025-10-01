@@ -1,0 +1,18 @@
+[gd_scene format=3 load_steps=3]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/seafood_scallop_material.tres" id="1"]
+
+[sub_resource type="CylinderMesh" id="1"]
+top_radius = 0.35
+bottom_radius = 0.35
+height = 0.3
+
+
+[node name="Seafood_Scallop" type="Node3D"]
+
+[node name="Shell" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+transform = Transform3D(0.6, 0, 0, 0, 0.2, 0, 0, 0, 0.6, 0, -0.05, 0)
+material_override = ExtResource("1")
+
+

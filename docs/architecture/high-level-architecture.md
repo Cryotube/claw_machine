@@ -5,7 +5,7 @@ Claw and Snackle uses a modular Godot 4.5 architecture centered on scene composi
 ## High Level Overview
 1. **Node Architecture:** Scene composition governs the experience—`SessionRoot.tscn` instantiates claw cabinet, HUD, customer queue, and tutorial overlay as siblings for clean separation.
 2. **Language Strategy:** Typed GDScript handles UI, state flow, services, physics orchestration, and analytics—no secondary language runtime is used.
-3. **Repository Layout:** Single Godot project with `src/` for scenes and scripts, `resources/` for data and themes, and `tests/` for GUT suites.
+3. **Repository Layout:** Single Godot project with `src/` for scenes and scripts, `resources/` hosting the canonical asset library (data, meshes, materials, scenes, VFX), and `tests/` for GUT suites so developers wire real assets instead of temporary anchors.
 4. **Systems:** Autoload singletons (`GameState`, `OrderService`, `SignalHub`, `Settings`, `AudioDirector`) coordinate gameplay, while resource-driven tables (orders, waves, customer profiles) keep tuning designer-friendly.
 5. **Gameplay Loop:** Input → ClawRig solver → Grab/Release events → Order resolution → Score/life updates → Wave pacing, mediated by the signal hub to reduce coupling.
 6. **Performance & TDD:** 60+ FPS target reinforced by pooling, solver tuning, and mandatory test execution through the CLI wrapper before merges.
@@ -39,8 +39,10 @@ res://
 │   └── ui/
 ├── resources/
 │   ├── data/
-│   ├── curves/
-│   └── themes/
+│   ├── materials/
+│   ├── meshes/
+│   ├── scenes/
+│   └── vfx/
 └── tests/
     └── gut/
 ```

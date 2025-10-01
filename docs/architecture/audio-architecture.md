@@ -2,6 +2,7 @@
 ## System Design
 - AudioServer bus layout: `Master → {Music, SFX, VO, UI, Haptics}`. `AudioDirector` autoload manages routing and snapshots.
 - Haptics integrated via platform-specific stubs (CoreHaptics on iOS, vibration service on Android).
+- Audio assets live under `res://resources/audio/`; integrate these banks directly so shipped effects replace temporary anchors during implementation.
 
 ## Categories
 | Category | Examples | Notes |

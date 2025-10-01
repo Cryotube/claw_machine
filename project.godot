@@ -1,16 +1,22 @@
 ; Engine configuration file.
-; It's best edited using the editor UI and not directly, 
+; It's best edited using the editor UI and not directly,
 ; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
 [application]
+
 config/name="Claw Machine"
 config/description="Prototype claw machine order queue"
 run/main_scene="res://scenes/session/SessionRoot.tscn"
-config/features=PackedStringArray("4.5", "ForwardPlus")
+config/features=PackedStringArray("4.5")
 
 [autoload]
+
 OrderService="*res://autoload/order_service.gd"
 SignalHub="*res://autoload/signal_hub.gd"
 LocalizationService="*res://autoload/localization_service.gd"
@@ -19,10 +25,32 @@ Settings="*res://autoload/settings.gd"
 AccessibilityService="*res://autoload/accessibility_service.gd"
 
 [display]
+
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
 
 [input]
-serve_current_order={"deadzone":0.2,"events":[{"type":"joy_button","device":-1,"button_index":0},{"type":"key","physical_keycode":4194326}]}
-debug_trigger_order={"deadzone":0.2,"events":[{"type":"joy_button","device":-1,"button_index":1},{"type":"key","physical_keycode":4194325}]}
+
+serve_current_order={
+"deadzone": 0.2,
+"events": [{
+"button_index": 0,
+"device": -1,
+"type": "joy_button"
+}, {
+"physical_keycode": 4194326,
+"type": "key"
+}]
+}
+debug_trigger_order={
+"deadzone": 0.2,
+"events": [{
+"button_index": 1,
+"device": -1,
+"type": "joy_button"
+}, {
+"physical_keycode": 4194325,
+"type": "key"
+}]
+}

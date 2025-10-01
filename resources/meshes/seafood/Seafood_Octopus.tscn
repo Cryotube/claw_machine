@@ -1,0 +1,40 @@
+[gd_scene format=3 load_steps=4]
+
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/seafood_octopus_material.tres" id="1"]
+
+[sub_resource type="SphereMesh" id="1"]
+radius = 0.35
+
+[sub_resource type="CapsuleMesh" id="2"]
+radius = 0.08
+height = 0.45
+
+
+[node name="Seafood_Octopus" type="Node3D"]
+
+[node name="Head" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.2, 0)
+material_override = ExtResource("1")
+
+[node name="Tentacle1" type="MeshInstance3D" parent="Head"]
+mesh = SubResource("2")
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 1, -0.4, 0, 0)
+material_override = ExtResource("1")
+
+[node name="Tentacle2" type="MeshInstance3D" parent="Head"]
+mesh = SubResource("2")
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 1, 0.4, 0, 0)
+material_override = ExtResource("1")
+
+[node name="Tentacle3" type="MeshInstance3D" parent="Head"]
+mesh = SubResource("2")
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 0.4, 0)
+material_override = ExtResource("1")
+
+[node name="Tentacle4" type="MeshInstance3D" parent="Head"]
+mesh = SubResource("2")
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, -0.4, 0)
+material_override = ExtResource("1")
+
+

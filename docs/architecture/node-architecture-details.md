@@ -7,6 +7,7 @@
 
 ## Resource Architecture
 - Config resources (orders, waves, claw tuning, audio mixes) stored under `res://resources/data/` with validation methods.
+- Placeholder and production-ready art assets (meshes, scenes, VFX, materials) live under `res://resources/`; wire these resources directly during story implementation instead of leaving anchor nodes.
 - Themes (`base_theme.tres` + overrides) match UX Control hierarchies.
 - Curve resources drive patience depletion and claw damping.
 - Localization-ready string tables set up for future expansion.
