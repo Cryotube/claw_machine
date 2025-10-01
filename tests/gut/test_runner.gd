@@ -1,9 +1,9 @@
 extends Node
 
 const GutTest = preload("res://tests/gut/gut_stub.gd")
-const TEST_SCRIPTS := [
-    preload("res://tests/gut/unit/test_customer_queue.gd"),
-    preload("res://tests/gut/unit/test_order_banner.gd"),
+const TEST_PATHS := [
+    "res://tests/gut/unit/test_customer_queue.gd",
+    "res://tests/gut/unit/test_order_banner.gd",
 ]
 
 var _total_failures: int = 0
@@ -17,7 +17,12 @@ func _execute() -> void:
 
 func _run() -> void:
     await get_tree().process_frame
-    for script in TEST_SCRIPTS:
+    for path in TEST_PATHS:
+        var script: GDScript = load(path)
+        if script == null:
+            push_error("Failed to load test script at %s" % path)
+            _total_failures += 1
+            continue
         await _run_script(script)
     if _total_failures > 0:
         push_error("Test run completed with %d failures across %d tests" % [_total_failures, _total_tests])
@@ -38,15 +43,18 @@ func _run_script(script: GDScript) -> void:
     for method_name in methods:
         _total_tests += 1
         test_instance._prepare_test(method_name)
-        _maybe_await(test_instance.before_each())
-        _maybe_await(test_instance.callv(method_name, []))
-        _maybe_await(test_instance.after_each())
+        var state = test_instance.callv("before_each", [])
+        await _await_if_state(state)
+        state = test_instance.callv(method_name, [])
+        await _await_if_state(state)
+        state = test_instance.callv("after_each", [])
+        await _await_if_state(state)
         if test_instance._has_failures():
             _total_failures += test_instance._get_failures().size()
         test_instance._finish_test()
     remove_child(test_instance)
     test_instance.queue_free()
 
-func _maybe_await(result) -> void:
-    if result is GDScriptFunctionState:
-        await result
+func _await_if_state(state) -> void:
+    if state is Object and state.is_class("GDScriptFunctionState"):
+        await state

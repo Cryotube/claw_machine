@@ -1,13 +1,13 @@
-extends GutTest
+extends "res://tests/gut/gut_stub.gd"
 
 const OrderService = preload("res://autoload/order_service.gd")
 const SignalHub = preload("res://autoload/signal_hub.gd")
 const CustomerQueueScene = preload("res://scenes/session/CustomerQueue.tscn")
 const OrderRequestDto = preload("res://scripts/dto/order_request_dto.gd")
 
-var _signal_hub: SignalHub
-var _order_service: OrderService
-var _queue: CustomerQueue
+var _signal_hub
+var _order_service
+var _queue
 
 func before_each() -> void:
     _signal_hub = SignalHub.new()
@@ -26,7 +26,7 @@ func test_spawn_reuses_pool() -> void:
     _order_service.request_order(order_a)
     wait_frames(1)
     assert_eq(_queue.debug_get_active_count(), 1, "First customer should spawn")
-    var first_id := _queue.debug_get_last_spawned_rid()
+    var first_id: int = _queue.debug_get_last_spawned_rid()
 
     _order_service.complete_order(StringName("order_a"))
     wait_frames(1)
@@ -41,7 +41,7 @@ func test_spawn_reuses_pool() -> void:
 
 func test_max_concurrent_enforced() -> void:
     _queue.max_concurrent = 2
-    for i in 3:
+    for i in range(3):
         _order_service.request_order(_make_order("order_%d" % i))
     wait_frames(1)
     assert_eq(_queue.debug_get_active_count(), 2, "Queue enforces max concurrent cats")

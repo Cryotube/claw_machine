@@ -1,11 +1,12 @@
-extends GutTest
+extends "res://tests/gut/gut_stub.gd"
 
 const LocalizationService = preload("res://autoload/localization_service.gd")
 const OrderBannerScene = preload("res://ui/components/OrderBanner.tscn")
 const PatienceMeterScene = preload("res://ui/components/PatienceMeter.tscn")
+const PatienceMeterScript = preload("res://scripts/ui/patience_meter.gd")
 const OrderRequestDto = preload("res://scripts/dto/order_request_dto.gd")
 
-var _localization: LocalizationService
+var _localization
 
 func before_each() -> void:
     _localization = LocalizationService.new()
@@ -17,7 +18,7 @@ func test_order_banner_uses_localized_strings() -> void:
         StringName("order_salmon_nigiri"): "Salmon Nigiri",
         StringName("tutorial_hint_default"): "Serve quickly to keep customers happy!"
     })
-    var banner: OrderBanner = OrderBannerScene.instantiate()
+    var banner = OrderBannerScene.instantiate()
     add_child_autofree(banner)
     wait_frames(1)
 
@@ -39,21 +40,21 @@ func test_order_banner_uses_localized_strings() -> void:
     assert_false(banner.visible, "Banner hides when cleared")
 
 func test_patience_meter_stage_colors() -> void:
-    var meter: PatienceMeter = PatienceMeterScene.instantiate()
+    var meter = PatienceMeterScene.instantiate()
     add_child_autofree(meter)
     wait_frames(1)
 
     meter.bind_order(StringName("order_meter"), 12.0)
-    meter.set_stage(PatienceMeter.PATIENCE_STAGE_PENDING)
+    meter.set_stage(PatienceMeterScript.PATIENCE_STAGE_PENDING)
     meter.update_remaining(0.8)
 
     var indicator: ColorRect = meter.get_node("Background/VBoxContainer/StageIndicator")
     assert_eq(indicator.color, meter.pending_color, "Pending color should apply")
 
-    meter.set_stage(PatienceMeter.PATIENCE_STAGE_WARNING)
+    meter.set_stage(PatienceMeterScript.PATIENCE_STAGE_WARNING)
     assert_eq(indicator.color, meter.warning_color, "Warning color should apply")
 
-    meter.set_stage(PatienceMeter.PATIENCE_STAGE_CRITICAL)
+    meter.set_stage(PatienceMeterScript.PATIENCE_STAGE_CRITICAL)
     assert_eq(indicator.color, meter.critical_color, "Critical color should apply")
     assert_true(meter.visible, "Meter remains visible until cleared")
 

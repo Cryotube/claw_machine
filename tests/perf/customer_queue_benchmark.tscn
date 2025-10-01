@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://perfbenchmark"]
+
+[ext_resource type="Script" path="res://tests/perf/customer_queue_benchmark.gd" id="1"]
+
+[node name="CustomerQueueBenchmark" type="Node"]
+script = ExtResource("1")
+

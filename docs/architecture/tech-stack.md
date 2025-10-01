@@ -19,6 +19,6 @@
 | Analytics | GDScript stub logging locally | Future-proof instrumentation | Thread-safe queue writes to `user://analytics.log` |
 
 ## Developer Process
-- Always execute headless Godot test runs through the wrapper: `./scripts/godot-cli.sh --headless --run tests/gut`. This guarantees consistent project paths and aligns with CI expectations.
+- Always execute headless Godot test runs through the wrapper: `./scripts/godot-cli.sh --headless --run res://tests/gut/test_runner.tscn`. This guarantees consistent project paths and aligns with CI expectations.
 - On any crash, freeze, or non-zero exit, inspect the terminal output for parse/compiler errors and resolve them before retrying. Do not assume the failure is a runtime issue until syntax errors are cleared.
 - Re-run the wrapper command after fixes to confirm the project loads and tests execute cleanly, then proceed with profiling or additional validation.

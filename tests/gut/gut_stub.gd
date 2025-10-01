@@ -26,6 +26,11 @@ func assert_true(condition: bool, message: String = "") -> void:
         return
     _record_failure(message if message != "" else "Expected condition to be true")
 
+func assert_false(condition: bool, message: String = "") -> void:
+    if not condition:
+        return
+    _record_failure(message if message != "" else "Expected condition to be false")
+
 func assert_eq(a, b, message: String = "") -> void:
     if a == b:
         return
