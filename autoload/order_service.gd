@@ -2,6 +2,9 @@ extends Node
 
 const OrderRequestDto = preload("res://scripts/dto/order_request_dto.gd")
 const SignalHub = preload("res://autoload/signal_hub.gd")
+const GameState = preload("res://autoload/game_state.gd")
+
+const FAILURE_RESTART_WINDOW_SEC := 2.0
 
 signal order_requested(order: OrderRequestDto)
 signal order_updated(order_id: StringName, normalized_remaining: float)
@@ -10,6 +13,8 @@ signal patience_stage_changed(order_id: StringName, stage: int)
 signal order_visualized(order: OrderRequestDto)
 signal order_visual_cleared(order_id: StringName, descriptor_id: StringName)
 signal order_visual_mismatch(order_id: StringName, descriptor_id: StringName)
+signal order_resolved_success(order_id: StringName, payload: Dictionary)
+signal order_resolved_failure(order_id: StringName, reason: StringName, payload: Dictionary)
 
 static var _instance: Node
 
@@ -46,6 +51,8 @@ func request_order(order: OrderRequestDto) -> void:
     order_copy.patience_duration = order.patience_duration
     order_copy.warning_threshold = order.warning_threshold
     order_copy.critical_threshold = order.critical_threshold
+    order_copy.base_score = order.base_score
+    order_copy.wave_index = order.wave_index
 
     var order_id := StringName(order_copy.order_id)
     _orders[order_id] = order_copy
@@ -67,7 +74,7 @@ func request_order(order: OrderRequestDto) -> void:
 func advance_time(delta: float) -> void:
     if delta <= 0.0 or _orders.is_empty():
         return
-    var completed: Array[StringName] = []
+    var expired: Array[StringName] = []
     for order_id in _orders.keys():
         var dto: OrderRequestDto = _orders[order_id]
         var remaining: float = maxf(0.0, dto.patience_duration - delta)
@@ -88,11 +95,14 @@ func advance_time(delta: float) -> void:
                 hub.broadcast_stage(order_id, stage)
 
         if remaining <= 0.0:
-            completed.append(order_id)
-    for order_id in completed:
-        complete_order(order_id)
+            expired.append(order_id)
+    for order_id in expired:
+        _resolve_timeout(order_id)
 
 func complete_order(order_id: StringName) -> void:
+    _finalize_order(order_id)
+
+func _finalize_order(order_id: StringName) -> void:
     if not _orders.has(order_id):
         return
     var descriptor_id: StringName = _descriptors.get(order_id, StringName())
@@ -129,3 +139,70 @@ func report_wrong_item(order_id: StringName) -> void:
     var hub := SignalHub.get_instance()
     if hub:
         hub.broadcast_stage(order_id, _stage_cache.get(order_id, 0))
+
+func deliver_item(order_id: StringName, descriptor_id: StringName) -> void:
+    if order_id == StringName() or descriptor_id == StringName():
+        return
+    if not _orders.has(order_id):
+        return
+    var expected: StringName = _descriptors.get(order_id, StringName())
+    var payload := _build_resolution_payload(order_id)
+    payload["delivered_descriptor_id"] = descriptor_id
+    payload["expected_descriptor_id"] = expected
+    if expected == descriptor_id:
+        payload["result"] = StringName("success")
+        emit_signal("order_resolved_success", order_id, payload)
+        _finalize_order(order_id)
+    else:
+        var reason := StringName("mismatch")
+        payload = _build_resolution_payload(order_id, reason)
+        payload["result"] = reason
+        emit_signal("order_resolved_failure", order_id, reason, payload)
+        report_wrong_item(order_id)
+        _finalize_order(order_id)
+
+func debug_get_active_order_ids() -> Array[StringName]:
+    var ids: Array[StringName] = []
+    for key in _orders.keys():
+        ids.append(key)
+    return ids
+
+func _resolve_timeout(order_id: StringName) -> void:
+    if not _orders.has(order_id):
+        return
+    var reason := StringName("timeout")
+    var payload := _build_resolution_payload(order_id, reason)
+    payload["result"] = reason
+    emit_signal("order_resolved_failure", order_id, reason, payload)
+    _finalize_order(order_id)
+
+func _build_resolution_payload(order_id: StringName, reason: StringName = StringName()) -> Dictionary:
+    var dto: OrderRequestDto = _orders.get(order_id, null)
+    var duration: float = float(_durations.get(order_id, 0.001))
+    var remaining: float = 0.0
+    if dto:
+        remaining = clampf(dto.patience_duration, 0.0, duration)
+    var normalized: float = 0.0
+    if duration > 0.0:
+        normalized = clampf(remaining / duration, 0.0, 1.0)
+    var snapshot: OrderRequestDto = dto
+    if dto and dto.has_method("duplicate"):
+        snapshot = dto.duplicate(true)
+    var game_state := GameState.get_instance()
+    var combo_snapshot: int = 0
+    if game_state and game_state.has_method("get_combo"):
+        combo_snapshot = int(game_state.get_combo())
+    var payload_reason := reason if reason != StringName() else StringName()
+    return {
+        "order_id": order_id,
+        "order": snapshot,
+        "remaining_time": remaining,
+        "duration": duration,
+        "normalized_remaining": normalized,
+        "base_score": dto.base_score if dto else 0,
+        "wave_index": dto.wave_index if dto else 0,
+        "expected_descriptor_id": _descriptors.get(order_id, StringName()),
+        "combo_snapshot": combo_snapshot,
+        "reason": payload_reason,
+        "restart_window_sec": FAILURE_RESTART_WINDOW_SEC,
+    }

@@ -30,7 +30,7 @@ func _ready() -> void:
 
 func _populate_items() -> void:
     _clear_existing()
-    var descriptors: Array[CabinetItemDescriptor] = catalog.descriptors
+    var descriptors: Array = catalog.get_descriptors()
     var total: int = descriptors.size()
     if total == 0:
         return
@@ -38,16 +38,17 @@ func _populate_items() -> void:
     _highlight_controller.pool_size = max(_highlight_controller.pool_size, total)
     var index: int = 0
     for descriptor in descriptors:
-        if descriptor == null:
+        if descriptor == null or not (descriptor is CabinetItemDescriptor):
             continue
-        var local_position: Vector3 = _calculate_position(index, max_columns) + descriptor.anchor_offset
-        var item_instance: Node3D = _instantiate_descriptor(descriptor)
+        var typed_descriptor: CabinetItemDescriptor = descriptor
+        var local_position: Vector3 = _calculate_position(index, max_columns) + typed_descriptor.anchor_offset
+        var item_instance: Node3D = _instantiate_descriptor(typed_descriptor)
         if item_instance:
             item_instance.position = local_position + Vector3(0.0, item_height, 0.0)
-            item_instance.name = String(descriptor.descriptor_id)
-            item_instance.set_meta("descriptor_id", descriptor.descriptor_id)
+            item_instance.name = String(typed_descriptor.descriptor_id)
+            item_instance.set_meta("descriptor_id", typed_descriptor.descriptor_id)
             _display_root.add_child(item_instance)
-        _create_marker(descriptor.descriptor_id, local_position)
+        _create_marker(typed_descriptor.descriptor_id, local_position)
         index += 1
     _highlight_controller.refresh_markers()
 

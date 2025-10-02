@@ -1,0 +1,28 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/combo_curve_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+bake_resolution = 24
+points = [{
+"x": 0.0,
+"y": 1.0,
+"left": 0.0,
+"right": 0.0
+}, {
+"x": 2.0,
+"y": 1.35,
+"left": 0.0,
+"right": 0.0
+}, {
+"x": 4.0,
+"y": 1.75,
+"left": 0.0,
+"right": 0.0
+}, {
+"x": 6.0,
+"y": 2.2,
+"left": 0.0,
+"right": 0.0
+}]

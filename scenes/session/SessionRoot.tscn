@@ -1,5 +1,5 @@
 
-[gd_scene format=3 load_steps=6 uid="uid://sessionroot"]
+[gd_scene format=3 load_steps=13 uid="uid://sessionroot"]
 
 [ext_resource type="Script" path="res://scripts/gameplay/session_root.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/session/CustomerQueue.tscn" id="2"]
@@ -7,6 +7,13 @@
 [ext_resource type="PackedScene" path="res://ui/components/PatienceMeter.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/session/ClawCabinet.tscn" id="5"]
 [ext_resource type="Script" path="res://scripts/services/order_visual_sync.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/gameplay/claw_input_controller.gd" id="7"]
+[ext_resource type="PackedScene" path="res://ui/components/VirtualJoystick.tscn" id="8"]
+[ext_resource type="Script" path="res://scripts/ui/session_score_panel.gd" id="9"]
+[ext_resource type="Script" path="res://scripts/services/order_resolution_pipeline.gd" id="10"]
+[ext_resource type="Script" path="res://scripts/ui/failure_banner.gd" id="11"]
+[ext_resource type="Script" path="res://scripts/gameplay/failure_reaction_controller.gd" id="12"]
+[ext_resource type="Script" path="res://scripts/ui/session_hud.gd" id="13"]
 
 [node name="SessionRoot" type="Node3D"]
 script = ExtResource("1")
@@ -17,11 +24,78 @@ unique_name_in_owner = true
 [node name="ClawCabinet" parent="." instance=ExtResource("5")]
 unique_name_in_owner = true
 
+[node name="ClawInputController" type="Node" parent="."]
+script = ExtResource("7")
+solver = NodePath("../ClawCabinet/ClawRig")
+joystick = NodePath("../UI/Controls/VirtualJoystick")
+extend_button = NodePath("../UI/Controls/ExtendButton")
+retract_button = NodePath("../UI/Controls/RetractButton")
+
 [node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("13")
 layer = 1
+
+[node name="SessionScorePanel" type="Control" parent="UI"]
+unique_name_in_owner = true
+script = ExtResource("9")
+anchor_left = 0.03
+anchor_top = 0.02
+anchor_right = 0.32
+anchor_bottom = 0.14
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/SessionScorePanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 4
+
+[node name="ScoreRow" type="HBoxContainer" parent="UI/SessionScorePanel/VBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="ScoreLabel" type="Label" parent="UI/SessionScorePanel/VBoxContainer/ScoreRow"]
+text = "Score"
+
+[node name="ScoreValue" type="Label" parent="UI/SessionScorePanel/VBoxContainer/ScoreRow"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+horizontal_alignment = 2
+text = "0"
+
+[node name="ComboRow" type="HBoxContainer" parent="UI/SessionScorePanel/VBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="ComboLabel" type="Label" parent="UI/SessionScorePanel/VBoxContainer/ComboRow"]
+text = "Combo"
+
+[node name="ComboValue" type="Label" parent="UI/SessionScorePanel/VBoxContainer/ComboRow"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+horizontal_alignment = 2
+text = "0× (1.00)"
+
+[node name="LivesRow" type="HBoxContainer" parent="UI/SessionScorePanel/VBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="LivesLabel" type="Label" parent="UI/SessionScorePanel/VBoxContainer/LivesRow"]
+text = "Lives"
+
+[node name="LivesValue" type="Label" parent="UI/SessionScorePanel/VBoxContainer/LivesRow"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+horizontal_alignment = 2
+text = "0"
 
 [node name="OrderBanner" parent="UI" instance=ExtResource("3")]
 unique_name_in_owner = true
+
+[node name="FailureBanner" type="Control" parent="UI"]
+unique_name_in_owner = true
+script = ExtResource("11")
+anchor_left = 0.15
+anchor_top = 0.2
+anchor_right = 0.85
+anchor_bottom = 0.32
 
 [node name="PatienceMeter" parent="UI" instance=ExtResource("4")]
 unique_name_in_owner = true
@@ -30,6 +104,50 @@ anchor_right = 0.95
 anchor_top = 0.04
 anchor_bottom = 0.18
 
+[node name="Controls" type="Control" parent="UI"]
+unique_name_in_owner = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+
+[node name="VirtualJoystick" parent="UI/Controls" instance=ExtResource("8")]
+unique_name_in_owner = true
+position = Vector2(48, 400)
+size = Vector2(220, 220)
+
+[node name="ExtendButton" type="TextureButton" parent="UI/Controls"]
+unique_name_in_owner = true
+anchor_left = 0.78
+anchor_top = 0.62
+anchor_right = 0.86
+anchor_bottom = 0.78
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+focus_mode = 0
+text = "GRAB"
+custom_minimum_size = Vector2(140, 140)
+
+[node name="RetractButton" type="TextureButton" parent="UI/Controls"]
+unique_name_in_owner = true
+anchor_left = 0.88
+anchor_top = 0.52
+anchor_right = 0.96
+anchor_bottom = 0.68
+focus_mode = 0
+text = "DROP"
+custom_minimum_size = Vector2(120, 120)
+
 [node name="OrderVisualSync" type="Node" parent="."]
 script = ExtResource("6")
 order_banner = NodePath("../UI/OrderBanner")
+
+[node name="OrderResolutionPipeline" type="Node" parent="."]
+script = ExtResource("10")
+
+[node name="FailureReactionController" type="Node" parent="."]
+script = ExtResource("12")
+queue_path = NodePath("../CustomerQueue")

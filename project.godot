@@ -19,6 +19,8 @@ config/features=PackedStringArray("4.5")
 
 OrderService="*res://autoload/order_service.gd"
 SignalHub="*res://autoload/signal_hub.gd"
+GameState="*res://autoload/game_state.gd"
+AnalyticsStub="*res://autoload/analytics_stub.gd"
 LocalizationService="*res://autoload/localization_service.gd"
 AudioDirector="*res://autoload/audio_director.gd"
 Settings="*res://autoload/settings.gd"
@@ -52,5 +54,41 @@ debug_trigger_order={
 }, {
 "physical_keycode": 4194325,
 "type": "key"
+}]
+}
+claw_extend_close={
+"deadzone": 0.2,
+"events": [{
+"button_index": 2,
+"device": -1,
+"type": "joy_button"
+}, {
+"physical_keycode": 32,
+"type": "key"
+}]
+}
+claw_retract={
+"deadzone": 0.2,
+"events": [{
+"button_index": 3,
+"device": -1,
+"type": "joy_button"
+}, {
+"physical_keycode": 82,
+"type": "key"
+}]
+}
+claw_move={
+"deadzone": 0.1,
+"events": [{
+"axis": 0,
+"axis_value": 0.0,
+"device": -1,
+"type": "joy_motion"
+}, {
+"axis": 1,
+"axis_value": 0.0,
+"device": -1,
+"type": "joy_motion"
 }]
 }

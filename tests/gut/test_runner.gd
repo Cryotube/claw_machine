@@ -6,6 +6,9 @@ const TEST_PATHS := [
     "res://tests/gut/unit/test_order_banner.gd",
     "res://tests/gut/unit/test_cabinet_highlight_controller.gd",
     "res://tests/gut/unit/test_order_visual_sync.gd",
+    "res://tests/gut/unit/test_claw_input_controller.gd",
+    "res://tests/gut/unit/test_claw_rig_solver.gd",
+    "res://tests/gut/unit/test_wave_config.gd",
 ]
 
 var _total_failures: int = 0

@@ -9,18 +9,31 @@ const CustomerQueue = preload("res://scripts/gameplay/customer_queue.gd")
 const PatienceMeter = preload("res://scripts/ui/patience_meter.gd")
 const OrderBanner = preload("res://scripts/ui/order_banner.gd")
 const AudioDirector = preload("res://autoload/audio_director.gd")
+const VirtualJoystick = preload("res://scripts/ui/virtual_joystick.gd")
+const SessionScorePanel = preload("res://scripts/ui/session_score_panel.gd")
+const GameState = preload("res://autoload/game_state.gd")
+const FailureBanner = preload("res://scripts/ui/failure_banner.gd")
+const SessionHUD = preload("res://scripts/ui/session_hud.gd")
 const OrderCatalog := preload("res://scripts/resources/order_catalog.gd")
 const ORDER_CATALOG: OrderCatalog = preload("res://resources/data/order_catalog.tres")
 
 @onready var _queue: CustomerQueue = %CustomerQueue
 @onready var _order_banner: OrderBanner = %OrderBanner
 @onready var _patience_meter: PatienceMeter = %PatienceMeter
+@onready var _controls_root: Control = %Controls
+@onready var _joystick: VirtualJoystick = %VirtualJoystick
+@onready var _extend_button: BaseButton = %ExtendButton
+@onready var _retract_button: BaseButton = %RetractButton
+@onready var _score_panel: SessionScorePanel = %SessionScorePanel
+@onready var _failure_banner: FailureBanner = %FailureBanner
+@onready var _session_hud: SessionHUD = $UI
 
 var _active_order_id: StringName = StringName()
 var _debug_order_index: int = 0
 
 func _ready() -> void:
     _connect_signals()
+    _initialize_score_panel()
     _update_safe_area()
 
 func _exit_tree() -> void:
@@ -43,6 +56,13 @@ func _connect_signals() -> void:
         hub.order_cleared.connect(_on_order_cleared)
         hub.patience_updated.connect(_on_patience_updated)
         hub.patience_stage_changed.connect(_on_patience_stage_changed)
+
+func _initialize_score_panel() -> void:
+    if _score_panel == null:
+        return
+    var state := GameState.get_instance()
+    if state:
+        _score_panel.set_initial_values(state.get_score(), state.get_combo(), state.get_lives())
 
 func _disconnect_signals() -> void:
     var hub := SignalHub.get_instance()
@@ -113,5 +133,27 @@ func _update_safe_area() -> void:
     var padding := Vector2.ZERO
     if settings:
         padding = settings.get_safe_padding(is_portrait)
-    _order_banner.update_safe_area(is_portrait, padding)
-    _patience_meter.update_safe_area(is_portrait, padding)
+    if _session_hud:
+        _session_hud.update_layout(is_portrait, padding)
+    _layout_claw_controls(viewport_size, padding, is_portrait)
+
+func _layout_claw_controls(viewport_size: Vector2, padding: Vector2, is_portrait: bool) -> void:
+    if _controls_root == null:
+        return
+    var joystick_margin := Vector2(48.0, 48.0)
+    if _joystick:
+        var joystick_position := Vector2(padding.x + joystick_margin.x, viewport_size.y - padding.y - _joystick.size.y - joystick_margin.y)
+        if not is_portrait:
+            joystick_position.y = viewport_size.y - padding.y - _joystick.size.y - joystick_margin.y * 0.5
+        _joystick.position = joystick_position
+    var button_offset := Vector2(120.0, 140.0)
+    if _extend_button:
+        var grab_position := Vector2(viewport_size.x - padding.x - _extend_button.size.x - button_offset.x, viewport_size.y - padding.y - _extend_button.size.y - button_offset.y)
+        if not is_portrait:
+            grab_position.y = viewport_size.y * 0.6 - _extend_button.size.y * 0.5
+        _extend_button.position = grab_position
+    if _retract_button:
+        var drop_position := Vector2(viewport_size.x - padding.x - _retract_button.size.x - button_offset.x * 0.6, viewport_size.y - padding.y - _retract_button.size.y - button_offset.y * 1.4)
+        if not is_portrait:
+            drop_position.y = viewport_size.y * 0.46 - _retract_button.size.y * 0.5
+        _retract_button.position = drop_position

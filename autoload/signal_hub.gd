@@ -9,6 +9,16 @@ signal patience_stage_changed(order_id: StringName, stage: int)
 signal order_visualized(descriptor_id: StringName, icon: Texture2D, order_id: StringName)
 signal order_visual_cleared(descriptor_id: StringName, order_id: StringName)
 signal order_visual_mismatch(descriptor_id: StringName, order_id: StringName)
+signal claw_grab_started(order_id: StringName)
+signal claw_grab_failed(order_id: StringName)
+signal claw_item_captured(descriptor_id: StringName, order_id: StringName)
+signal claw_item_released(descriptor_id: StringName, order_id: StringName)
+signal score_updated(total_score: int, delta: int)
+signal combo_updated(combo_count: int, multiplier: float)
+signal lives_updated(lives: int)
+signal order_resolved_success(order_id: StringName, payload: Dictionary)
+signal order_resolved_failure(order_id: StringName, reason: StringName, payload: Dictionary)
+signal order_failure_resolved(order_id: StringName, payload: Dictionary)
 
 static var _instance: Node
 
@@ -38,3 +48,33 @@ func broadcast_visual_cleared(descriptor_id: StringName, order_id: StringName) -
 
 func broadcast_visual_mismatch(descriptor_id: StringName, order_id: StringName) -> void:
     emit_signal("order_visual_mismatch", descriptor_id, order_id)
+
+func broadcast_claw_grab_started(order_id: StringName) -> void:
+    emit_signal("claw_grab_started", order_id)
+
+func broadcast_claw_grab_failed(order_id: StringName) -> void:
+    emit_signal("claw_grab_failed", order_id)
+
+func broadcast_claw_item_captured(descriptor_id: StringName, order_id: StringName) -> void:
+    emit_signal("claw_item_captured", descriptor_id, order_id)
+
+func broadcast_claw_item_released(descriptor_id: StringName, order_id: StringName) -> void:
+    emit_signal("claw_item_released", descriptor_id, order_id)
+
+func broadcast_score_update(total_score: int, delta: int) -> void:
+    emit_signal("score_updated", total_score, delta)
+
+func broadcast_combo_update(combo_count: int, multiplier: float) -> void:
+    emit_signal("combo_updated", combo_count, multiplier)
+
+func broadcast_lives_update(lives: int) -> void:
+    emit_signal("lives_updated", lives)
+
+func broadcast_order_success(order_id: StringName, payload: Dictionary) -> void:
+    emit_signal("order_resolved_success", order_id, payload)
+
+func broadcast_order_failure(order_id: StringName, reason: StringName, payload: Dictionary) -> void:
+    emit_signal("order_resolved_failure", order_id, reason, payload)
+
+func broadcast_order_failure_resolved(order_id: StringName, payload: Dictionary) -> void:
+    emit_signal("order_failure_resolved", order_id, payload)

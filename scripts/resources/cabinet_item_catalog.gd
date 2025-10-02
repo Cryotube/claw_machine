@@ -13,6 +13,13 @@ func get_descriptor(descriptor_id: StringName) -> CabinetItemDescriptor:
             return descriptor
     return null
 
+func get_descriptors() -> Array[CabinetItemDescriptor]:
+    var results: Array[CabinetItemDescriptor] = []
+    for descriptor in descriptors:
+        if descriptor is CabinetItemDescriptor:
+            results.append(descriptor)
+    return results
+
 func get_all_descriptor_ids() -> Array[StringName]:
     var ids: Array[StringName] = []
     for descriptor in descriptors:

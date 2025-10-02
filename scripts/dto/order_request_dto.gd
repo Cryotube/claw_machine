@@ -11,3 +11,5 @@ class_name OrderRequestDto
 @export var patience_duration: float = 10.0
 @export var warning_threshold: float = 0.35
 @export var critical_threshold: float = 0.15
+@export var base_score: int = 100
+@export var wave_index: int = 0

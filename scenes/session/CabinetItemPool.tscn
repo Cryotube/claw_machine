@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://caox2q5qvsbjb"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/cabinet_item_pool.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/data/cabinet_item_descriptors.tres" id="2"]
+
+[node name="CabinetItemPool" type="Node3D"]
+script = ExtResource("1")
+catalog = ExtResource("2")
+items_per_descriptor = 2
+pool_root_path = NodePath("PoolRoot")
+
+[node name="PoolRoot" type="Node3D" parent="."]
+

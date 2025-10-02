@@ -1,0 +1,6 @@
+[gd_resource type="Curve" format=3]
+
+[resource]
+min_value = 0.0
+max_value = 1.0
+bake_resolution = 16

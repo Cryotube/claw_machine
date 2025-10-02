@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://clawrig"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/claw_rig_solver.gd" id="1"]
+
+[node name="ClawRig" type="Node3D"]
+script = ExtResource("1")
+
+[node name="ArmRoot" type="Node3D" parent="."]
+
+[node name="Grabber" type="Node3D" parent="ArmRoot"]
+
+[node name="GripCollider" type="Area3D" parent="Grabber"]
+

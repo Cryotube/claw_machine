@@ -3,6 +3,21 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 
+ensure_local_home() {
+  local godot_home
+  godot_home="${GODOT_USER_HOME:-"$SCRIPT_DIR/artifacts/home"}"
+  mkdir -p "$godot_home"
+  export GODOT_USER_HOME="$godot_home"
+  # Some environments (like Codex CLI) sandbox the host HOME, so redirect Godot's
+  # writes to the project-local home if HOME isn't already pointing within the
+  # workspace.
+  case "$HOME" in
+    "$SCRIPT_DIR"* ) ;;
+    "$godot_home" ) ;;
+    * ) export HOME="$godot_home" ;;
+  esac
+}
+
 resolve_godot_bin() {
   local candidate
 
@@ -29,7 +44,14 @@ resolve_godot_bin() {
     fi
   done
 
-  # 3. Fall back to default macOS install path.
+  # 3. Prefer bundled macOS app if present.
+  candidate="$SCRIPT_DIR/artifacts/godot/Godot.app/Contents/MacOS/Godot"
+  if [[ -x "$candidate" ]]; then
+    echo "$candidate"
+    return 0
+  fi
+
+  # 4. Fall back to default macOS install path.
   candidate="/Applications/Godot.app/Contents/MacOS/Godot"
   if [[ -x "$candidate" ]]; then
     echo "$candidate"
@@ -39,6 +61,8 @@ resolve_godot_bin() {
   echo "ERROR: Godot binary not found. Set GODOT_BIN or install Godot (expected at $candidate)." >&2
   exit 1
 }
+
+ensure_local_home
 
 GODOT_BIN="$(resolve_godot_bin)"
 
