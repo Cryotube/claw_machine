@@ -1,52 +1,74 @@
-[gd_scene load_steps=2 format=3 uid="uid://patiencemeter"]
+[gd_scene load_steps=6 format=3 uid="uid://patiencemeter"]
 
 [ext_resource type="Script" path="res://scripts/ui/patience_meter.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="1"]
+bg_color = Color(0.105882, 0.141176, 0.188235, 0.9)
+corner_radius_all = 18
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 14.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="2"]
+bg_color = Color(0.329412, 0.67451, 0.568627, 1.0)
+corner_radius_all = 12
+
+[sub_resource type="StyleBoxFlat" id="3"]
+bg_color = Color(0.062745, 0.082353, 0.113725, 0.6)
+corner_radius_all = 12
+
+[sub_resource type="LabelSettings" id="4"]
+font_size = 20
+font_weight = 600
 
 [node name="PatienceMeter" type="Control"]
 layout_mode = 3
 anchors_preset = 1
-anchor_right = 0.3
-anchor_bottom = 0.1
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
+anchor_left = 0.68
+anchor_top = 0.03
+anchor_right = 0.95
+anchor_bottom = 0.18
 size_flags_horizontal = 3
 mouse_filter = 2
 script = ExtResource("1")
 
-[node name="Background" type="Panel" parent="."]
-layout_mode = 1
+[node name="Panel" type="Panel" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
+theme_override_styles/panel = SubResource("1")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Background"]
-layout_mode = 1
+[node name="VBox" type="VBoxContainer" parent="Panel"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 12.0
-offset_right = -12.0
-offset_bottom = -12.0
-separation = 8
+custom_constants/separation = 10
 
-[node name="StageIndicator" type="ColorRect" parent="Background/VBoxContainer"]
+[node name="Header" type="HBoxContainer" parent="Panel/VBox"]
 unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(0, 16)
-color = Color(0.376471, 1, 0.568627, 1)
+custom_constants/separation = 10
 
-[node name="ProgressBar" type="TextureProgressBar" parent="Background/VBoxContainer"]
+[node name="StageIndicator" type="ColorRect" parent="Panel/VBox/Header"]
 unique_name_in_owner = true
-layout_mode = 2
-min_value = 0.0
+custom_minimum_size = Vector2(18, 18)
+color = Color(0.329412, 0.67451, 0.568627, 1.0)
+corner_radius_bottom_left = 9
+corner_radius_bottom_right = 9
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+
+[node name="StageLabel" type="Label" parent="Panel/VBox/Header"]
+unique_name_in_owner = true
+label_settings = SubResource("4")
+text = "CALM"
+
+[node name="Progress" type="ProgressBar" parent="Panel/VBox"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
 max_value = 1.0
-step = 0.01
-fill_mode = 3
 value = 1.0
+step = 0.01
+theme_override_styles/fill = SubResource("2")
+theme_override_styles/background = SubResource("3")
+

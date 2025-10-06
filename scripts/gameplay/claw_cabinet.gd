@@ -71,10 +71,41 @@ func _calculate_position(index: int, max_columns: int) -> Vector3:
 func _instantiate_descriptor(descriptor: CabinetItemDescriptor) -> Node3D:
     if descriptor.scene == null:
         return null
-    var instance: Node = descriptor.scene.instantiate()
-    if instance is Node3D:
-        return instance as Node3D
-    instance.queue_free()
+    var anchor := StaticBody3D.new()
+    anchor.set_meta("descriptor_id", descriptor.descriptor_id)
+    anchor.name = String(descriptor.descriptor_id)
+    var visual := descriptor.scene.instantiate()
+    if visual is Node3D:
+        anchor.add_child(visual)
+    else:
+        visual.queue_free()
+    var shape := _build_collision_shape(anchor)
+    if shape:
+        anchor.add_child(shape)
+    return anchor
+
+func _build_collision_shape(root: Node) -> CollisionShape3D:
+    var mesh_instance := _find_mesh(root)
+    if mesh_instance == null:
+        return null
+    var aabb := mesh_instance.get_aabb()
+    if aabb.size == Vector3.ZERO:
+        aabb.size = Vector3.ONE * 0.2
+    var shape := BoxShape3D.new()
+    shape.extents = aabb.size * 0.5
+    var collision := CollisionShape3D.new()
+    collision.shape = shape
+    collision.transform.origin = aabb.position + aabb.size * 0.5
+    return collision
+
+func _find_mesh(root: Node) -> MeshInstance3D:
+    if root is MeshInstance3D:
+        return root
+    if root is Node:
+        for child in root.get_children():
+            var found := _find_mesh(child)
+            if found:
+                return found
     return null
 
 func _create_marker(descriptor_id: StringName, local_position: Vector3) -> void:

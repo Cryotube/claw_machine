@@ -1,13 +1,56 @@
-[gd_scene load_steps=2 format=3 uid="uid://clawrig"]
+[gd_scene load_steps=6 format=3 uid="uid://clawrig"]
 
 [ext_resource type="Script" path="res://scripts/gameplay/claw_rig_solver.gd" id="1"]
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/metal_trim_material.tres" id="2"]
+[ext_resource type="StandardMaterial3D" path="res://resources/materials/palette/neutral_mid_material.tres" id="3"]
+
+[sub_resource type="BoxShape3D" id="1"]
+extents = Vector3(0.12, 0.12, 0.12)
+
+[sub_resource type="CylinderMesh" id="2"]
+radius = 0.06
+height = 0.6
 
 [node name="ClawRig" type="Node3D"]
 script = ExtResource("1")
 
 [node name="ArmRoot" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="ArmVisual" type="MeshInstance3D" parent="ArmRoot"]
+mesh = SubResource("2")
+material_override = ExtResource("3")
 
 [node name="Grabber" type="Node3D" parent="ArmRoot"]
+unique_name_in_owner = true
+translation = Vector3(0, -0.3, 0)
 
-[node name="GripCollider" type="Area3D" parent="Grabber"]
+[node name="GrabVisual" type="MeshInstance3D" parent="ArmRoot/Grabber"]
+mesh = SubResource("2")
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, -0.2, 0)
+material_override = ExtResource("2")
 
+[node name="GripArea" type="Area3D" parent="ArmRoot/Grabber"]
+unique_name_in_owner = true
+monitoring = true
+monitorable = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ArmRoot/Grabber/GripArea"]
+shape = SubResource("1")
+
+[node name="HoldPoint" type="Marker3D" parent="ArmRoot/Grabber"]
+unique_name_in_owner = true
+translation = Vector3(0, -0.05, 0)
+
+[node name="GrabHint" type="OmniLight3D" parent="ArmRoot/Grabber"]
+light_color = Color(0.803922, 0.890196, 1, 1)
+energy = 0.6
+
+[node name="Bounds" type="Area3D" parent="."]
+monitoring = false
+monitorable = false
+
+[node name="BoundsShape" type="CollisionShape3D" parent="Bounds"]
+shape = SubResource("1")
+
+[node name="Audio" type="Node" parent="."]

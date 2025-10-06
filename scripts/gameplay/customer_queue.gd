@@ -4,6 +4,7 @@ class_name CustomerQueue
 const OrderRequestDto = preload("res://scripts/dto/order_request_dto.gd")
 const SignalHub = preload("res://autoload/signal_hub.gd")
 const WaveSettingsDto = preload("res://scripts/dto/wave_settings_dto.gd")
+const CustomerAvatar := preload("res://scripts/gameplay/customer_avatar.gd")
 
 @export var customer_scene: PackedScene
 @export var spawn_marker_paths: Array[NodePath] = []
@@ -18,6 +19,14 @@ var _last_spawned_id: int = -1
 var _deferred_releases: Dictionary = {}
 
 @export var failure_release_default_sec: float = 0.5
+@export var entry_offset: Vector3 = Vector3(-2.4, 0.0, -0.2)
+
+var _palette_swatches: Array[Color] = [
+    Color(0.980392, 0.835294, 0.894118),
+    Color(0.725490, 0.823529, 0.980392),
+    Color(0.792157, 0.917647, 0.843137),
+    Color(0.964706, 0.894118, 0.792157)
+]
 
 var _spawn_schedule: PackedFloat32Array = PackedFloat32Array()
 var _spawn_callable: Callable
@@ -90,7 +99,15 @@ func _spawn_order(order: OrderRequestDto) -> void:
 
     var index: int = min(_active_customers.size(), _spawn_markers.size() - 1)
     var marker: Node3D = _spawn_markers[index]
-    customer.global_transform = marker.global_transform
+    var target_transform := marker.transform
+    customer.transform = target_transform
+    if entry_offset != Vector3.ZERO:
+        customer.position = target_transform.origin + entry_offset
+        var tree := get_tree()
+        if tree:
+            var tween := tree.create_tween()
+            tween.tween_property(customer, "position", target_transform.origin, 0.65).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+    _apply_customer_palette(customer)
 
     if customer.get_parent() != self:
         add_child(customer)
@@ -129,6 +146,15 @@ func _acquire_customer() -> Node3D:
     if customer_scene:
         return customer_scene.instantiate() as Node3D
     return Node3D.new()
+
+func _apply_customer_palette(customer: Node3D) -> void:
+    if customer == null or _palette_swatches.is_empty():
+        return
+    var color: Color = _palette_swatches[randi() % _palette_swatches.size()]
+    if customer is CustomerAvatar:
+        (customer as CustomerAvatar).set_palette(color)
+    elif customer.has_method("set_palette"):
+        customer.call_deferred("set_palette", color)
 
 func debug_get_active_count() -> int:
     return _active_customers.size()

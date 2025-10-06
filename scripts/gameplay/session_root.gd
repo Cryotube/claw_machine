@@ -16,6 +16,7 @@ const FailureBanner = preload("res://scripts/ui/failure_banner.gd")
 const SessionHUD = preload("res://scripts/ui/session_hud.gd")
 const OrderCatalog := preload("res://scripts/resources/order_catalog.gd")
 const ORDER_CATALOG: OrderCatalog = preload("res://resources/data/order_catalog.tres")
+const TutorialOverlay := preload("res://scripts/ui/tutorial_overlay.gd")
 
 @onready var _queue: CustomerQueue = %CustomerQueue
 @onready var _order_banner: OrderBanner = %OrderBanner
@@ -27,14 +28,17 @@ const ORDER_CATALOG: OrderCatalog = preload("res://resources/data/order_catalog.
 @onready var _score_panel: SessionScorePanel = %SessionScorePanel
 @onready var _failure_banner: FailureBanner = %FailureBanner
 @onready var _session_hud: SessionHUD = $UI
+@onready var _tutorial_overlay: TutorialOverlay = %TutorialOverlay
 
 var _active_order_id: StringName = StringName()
 var _debug_order_index: int = 0
 
 func _ready() -> void:
+    randomize()
     _connect_signals()
     _initialize_score_panel()
     _update_safe_area()
+    _show_tutorial_if_needed()
 
 func _exit_tree() -> void:
     _disconnect_signals()
@@ -56,6 +60,7 @@ func _connect_signals() -> void:
         hub.order_cleared.connect(_on_order_cleared)
         hub.patience_updated.connect(_on_patience_updated)
         hub.patience_stage_changed.connect(_on_patience_stage_changed)
+        hub.combo_updated.connect(_on_combo_updated)
 
 func _initialize_score_panel() -> void:
     if _score_panel == null:
@@ -75,27 +80,35 @@ func _disconnect_signals() -> void:
             hub.patience_updated.disconnect(_on_patience_updated)
         if hub.patience_stage_changed.is_connected(_on_patience_stage_changed):
             hub.patience_stage_changed.disconnect(_on_patience_stage_changed)
+        if hub.combo_updated.is_connected(_on_combo_updated):
+            hub.combo_updated.disconnect(_on_combo_updated)
 
 func _on_order_requested(order: OrderRequestDto) -> void:
     _active_order_id = order.order_id
-    _patience_meter.bind_order(order.order_id, order.patience_duration, order.warning_threshold, order.critical_threshold)
-    _patience_meter.set_stage(PatienceMeter.PATIENCE_STAGE_PENDING)
+    if _patience_meter:
+        _patience_meter.bind_order(order.order_id, order.patience_duration, order.warning_threshold, order.critical_threshold)
+        _patience_meter.set_stage(PatienceMeter.PATIENCE_STAGE_PENDING)
 
 func _on_order_cleared(order_id: StringName) -> void:
     if order_id != _active_order_id:
         return
     _active_order_id = StringName()
-    _patience_meter.clear()
+    if _patience_meter:
+        _patience_meter.clear()
 
 func _on_patience_updated(order_id: StringName, normalized_remaining: float) -> void:
     if order_id != _active_order_id:
         return
-    _patience_meter.update_remaining(normalized_remaining)
+    if _patience_meter:
+        _patience_meter.update_remaining(normalized_remaining)
 
 func _on_patience_stage_changed(order_id: StringName, stage: int) -> void:
     if order_id != _active_order_id:
         return
-    _patience_meter.set_stage(stage)
+    if _patience_meter:
+        _patience_meter.set_stage(stage)
+    if _order_banner:
+        _order_banner.update_stage(stage)
     var audio := AudioDirector.get_instance()
     if audio:
         match stage:
@@ -103,6 +116,25 @@ func _on_patience_stage_changed(order_id: StringName, stage: int) -> void:
                 audio.play_event(StringName("patience_warning"))
             PatienceMeter.PATIENCE_STAGE_CRITICAL:
                 audio.play_event(StringName("patience_critical"))
+
+func _on_combo_updated(combo_count: int, multiplier: float) -> void:
+    if _order_banner:
+        _order_banner.update_combo(combo_count, multiplier)
+
+func _show_tutorial_if_needed() -> void:
+    var settings := Settings.get_instance()
+    if settings == null:
+        return
+    if settings.tutorial_completed:
+        return
+    if _tutorial_overlay:
+        _tutorial_overlay.dismissed.connect(_on_tutorial_dismissed, CONNECT_ONE_SHOT)
+        _tutorial_overlay.show_overlay()
+
+func _on_tutorial_dismissed() -> void:
+    var settings := Settings.get_instance()
+    if settings and settings.has_method("mark_tutorial_complete"):
+        settings.mark_tutorial_complete()
 
 func _spawn_debug_order() -> void:
     if ORDER_CATALOG == null or ORDER_CATALOG.orders.is_empty():

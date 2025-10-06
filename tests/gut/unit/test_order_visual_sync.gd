@@ -3,6 +3,7 @@ extends "res://tests/gut/gut_stub.gd"
 const ORDER_VISUAL_SYNC_PATH := "res://scripts/services/order_visual_sync.gd"
 const ACCESSIBILITY_SERVICE_PATH := "res://autoload/accessibility_service.gd"
 const ORDER_BANNER_SCENE_PATH := "res://ui/components/OrderBanner.tscn"
+const OrderBanner := preload("res://scripts/ui/order_banner.gd")
 
 const SignalHub := preload("res://autoload/signal_hub.gd")
 const OrderService := preload("res://autoload/order_service.gd")
@@ -53,8 +54,12 @@ func test_visual_sync_broadcasts_descriptor_and_updates_banner() -> void:
 
     var banner_scene: PackedScene = load(ORDER_BANNER_SCENE_PATH)
     assert_true(banner_scene != null, "OrderBanner scene must exist")
-    var banner: Control = banner_scene.instantiate()
-    add_child_autofree(banner)
+    var banner_node := banner_scene.instantiate()
+    add_child_autofree(banner_node)
+    var banner := banner_node as OrderBanner
+    assert_true(banner != null, "OrderBanner scene should use OrderBanner script")
+    if banner == null:
+        return
 
     var emitted: Array = []
     _signal_hub.connect("order_visualized", func(descriptor_id: StringName, icon: Texture2D, order_id: StringName) -> void:
@@ -79,7 +84,7 @@ func test_visual_sync_broadcasts_descriptor_and_updates_banner() -> void:
     assert_true(emitted[0]["icon"] is Texture2D, "Icon texture should flow through the signal")
     assert_eq(emitted[0]["order_id"], StringName("order_sync"), "Order id should accompany visualization signal")
 
-    var icon_rect: TextureRect = banner.get_node("Panel/HBoxContainer/IconTexture")
+    var icon_rect: TextureRect = banner.get_node("Panel/Content/Portrait/Frame/CatTexture")
     assert_true(icon_rect.texture is Texture2D, "OrderBanner should receive texture from DTO")
 
 func test_visual_sync_emits_clear_on_completion() -> void:
@@ -88,8 +93,12 @@ func test_visual_sync_emits_clear_on_completion() -> void:
 
     var banner_scene: PackedScene = load(ORDER_BANNER_SCENE_PATH)
     assert_true(banner_scene != null, "OrderBanner scene must exist")
-    var banner: Control = banner_scene.instantiate()
-    add_child_autofree(banner)
+    var banner_node := banner_scene.instantiate()
+    add_child_autofree(banner_node)
+    var banner := banner_node as OrderBanner
+    assert_true(banner != null, "OrderBanner scene should use OrderBanner script")
+    if banner == null:
+        return
 
     var cleared: Array[Dictionary] = []
     _signal_hub.connect("order_visual_cleared", func(descriptor_id: StringName, order_id: StringName) -> void:
@@ -120,8 +129,12 @@ func test_visual_sync_handles_wrong_item() -> void:
     assert_true(sync_script != null, "OrderVisualSync script should exist")
 
     var banner_scene: PackedScene = load(ORDER_BANNER_SCENE_PATH)
-    var banner: Control = banner_scene.instantiate()
-    add_child_autofree(banner)
+    var banner_node := banner_scene.instantiate()
+    add_child_autofree(banner_node)
+    var banner := banner_node as OrderBanner
+    assert_true(banner != null, "OrderBanner scene should use OrderBanner script")
+    if banner == null:
+        return
 
     var mismatches: Array[Dictionary] = []
     _signal_hub.connect("order_visual_mismatch", func(descriptor_id: StringName, order_id: StringName) -> void:

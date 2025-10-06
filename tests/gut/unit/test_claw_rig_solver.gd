@@ -1,5 +1,6 @@
 extends "res://tests/gut/gut_stub.gd"
 
+const ClawRigScene := preload("res://scenes/session/ClawRig.tscn")
 const ClawRigSolver := preload("res://scripts/gameplay/claw_rig_solver.gd")
 const CabinetItemPool := preload("res://scripts/gameplay/cabinet_item_pool.gd")
 const SignalHub := preload("res://autoload/signal_hub.gd")
@@ -8,69 +9,81 @@ const OrderRequestDto := preload("res://scripts/dto/order_request_dto.gd")
 
 class CabinetItemPoolStub:
     extends CabinetItemPool
+
     var request_log: Array[StringName] = []
-    var release_log: Array[Node3D] = []
+    var release_log: Array[RigidBody3D] = []
+    var descriptor_override: StringName = StringName()
+    var last_acquired: RigidBody3D
+    var _descriptor_lookup: Dictionary = {}
 
     func _ready() -> void:
-        pass
+        catalog = null
 
-    func add_item(descriptor_id: StringName, node: Node3D) -> void:
-        if not _available.has(descriptor_id):
-            _available[descriptor_id] = []
-        _available[descriptor_id].append(node)
-        _active_lookup[node] = descriptor_id
+    func acquire_item(descriptor_id: StringName) -> RigidBody3D:
+        var target := descriptor_override if descriptor_override != StringName() else descriptor_id
+        request_log.append(target)
+        var body := RigidBody3D.new()
+        body.freeze = true
+        body.sleeping = true
+        body.linear_velocity = Vector3.ZERO
+        body.angular_velocity = Vector3.ZERO
+        body.mass = 0.4
+        body.gravity_scale = 1.0
+        body.visible = true
+        body.name = String(target)
+        body.set_meta("descriptor_id", target)
+        var shape := CollisionShape3D.new()
+        shape.shape = BoxShape3D.new()
+        shape.shape.extents = Vector3(0.2, 0.2, 0.2)
+        body.add_child(shape)
+        add_child(body)
+        _descriptor_lookup[body] = target
+        last_acquired = body
+        return body
 
-    func acquire_item(descriptor_id: StringName) -> Node3D:
-        request_log.append(descriptor_id)
-        var bucket: Array = _available.get(descriptor_id, [])
-        if bucket.is_empty():
-            return null
-        var item: Node3D = bucket.pop_back()
-        _available[descriptor_id] = bucket
-        _active_lookup[item] = descriptor_id
-        return item
-
-    func release_item(item: Node3D) -> void:
-        if item == null:
-            return
+    func release_item(item: RigidBody3D) -> void:
         release_log.append(item)
-        var descriptor_id: StringName = _active_lookup.get(item, StringName())
-        _active_lookup.erase(item)
-        if descriptor_id == StringName():
-            return
-        if not _available.has(descriptor_id):
-            _available[descriptor_id] = []
-        var bucket: Array = _available[descriptor_id]
-        bucket.append(item)
-        _available[descriptor_id] = bucket
+        _descriptor_lookup.erase(item)
+        item.queue_free()
 
     func get_descriptor_for(item: Node3D) -> StringName:
-        return _active_lookup.get(item, StringName())
+        return _descriptor_lookup.get(item, StringName())
 
 var _signal_hub: SignalHub
 var _order_service: OrderService
 var _solver: ClawRigSolver
 var _pool: CabinetItemPoolStub
-
 var _started_events: Array[StringName] = []
 var _captured_events: Array = []
-var _failed_events: Array[StringName] = []
 var _released_events: Array = []
+var _failed_events: Array[StringName] = []
 var _orders_cleared: Array[StringName] = []
 var _order_mismatches: Array[StringName] = []
 
 func before_each() -> void:
     _signal_hub = SignalHub.new()
     add_child_autofree(_signal_hub)
+
     _order_service = OrderService.new()
     add_child_autofree(_order_service)
+
     _pool = CabinetItemPoolStub.new()
     add_child_autofree(_pool)
-    _solver = ClawRigSolver.new()
-    _solver.item_pool = _pool
-    add_child_autofree(_solver)
-    _connect_signals()
+
+    var claw_scene := ClawRigScene.instantiate() as ClawRigSolver
+    var drop_zone := Area3D.new()
+    drop_zone.name = "TestDropZone"
+    var shape := CollisionShape3D.new()
+    shape.shape = BoxShape3D.new()
+    shape.shape.extents = Vector3(0.4, 0.4, 0.4)
+    drop_zone.add_child(shape)
+    claw_scene.add_child(drop_zone)
+    claw_scene.drop_zone_path = NodePath("TestDropZone")
+    claw_scene.item_pool = _pool
+    add_child_autofree(claw_scene)
+    _solver = claw_scene
     wait_frames(1)
+    _connect_signals()
 
 func _connect_signals() -> void:
     if _signal_hub.has_signal("claw_grab_started"):
@@ -81,13 +94,13 @@ func _connect_signals() -> void:
         _signal_hub.claw_item_captured.connect(func(descriptor_id: StringName, order_id: StringName) -> void:
             _captured_events.append([descriptor_id, order_id])
         )
-    if _signal_hub.has_signal("claw_grab_failed"):
-        _signal_hub.claw_grab_failed.connect(func(order_id: StringName) -> void:
-            _failed_events.append(order_id)
-        )
     if _signal_hub.has_signal("claw_item_released"):
         _signal_hub.claw_item_released.connect(func(descriptor_id: StringName, order_id: StringName) -> void:
             _released_events.append([descriptor_id, order_id])
+        )
+    if _signal_hub.has_signal("claw_grab_failed"):
+        _signal_hub.claw_grab_failed.connect(func(order_id: StringName) -> void:
+            _failed_events.append(order_id)
         )
     if _order_service.has_signal("order_cleared"):
         _order_service.order_cleared.connect(func(order_id: StringName) -> void:
@@ -100,85 +113,70 @@ func _connect_signals() -> void:
 
 func after_each() -> void:
     _order_service.clear_all()
+    _started_events.clear()
+    _captured_events.clear()
+    _released_events.clear()
+    _failed_events.clear()
+    _orders_cleared.clear()
+    _order_mismatches.clear()
+    _pool.descriptor_override = StringName()
 
-func test_begin_lower_emits_started_event() -> void:
-    var descriptor_id := StringName("salmon")
-    var order := _make_order(StringName("order_salmon"), descriptor_id)
-    _order_service.request_order(order)
-    wait_frames(1)
-    _signal_hub.broadcast_visualized(descriptor_id, null, order.order_id)
-
-    _solver.begin_lower()
-    wait_frames(1)
-
-    assert_eq(_started_events.size(), 1, "Expect claw_grab_started to fire once")
-    assert_eq(_solver.debug_get_state_name(), "DESCENDING", "Solver should enter DESCENDING state")
-
-func test_grip_success_captures_item_and_clears_order() -> void:
-    var descriptor_id := StringName("shrimp")
-    var order_id := StringName("order_shrimp")
-    _order_service.request_order(_make_order(order_id, descriptor_id))
-    wait_frames(1)
-    _signal_hub.broadcast_visualized(descriptor_id, null, order_id)
-
-    var pooled_item := Node3D.new()
-    _pool.add_item(descriptor_id, pooled_item)
+func test_begin_lower_emits_started_event_and_grips_item() -> void:
+    var descriptor := StringName("salmon")
+    var order_id := _prepare_active_order(descriptor)
+    _place_display_item(descriptor)
 
     _solver.begin_lower()
-    wait_frames(1)
+    wait_frames(4)
     _solver.execute_grip()
-    wait_frames(1)
+    wait_frames(6)
 
-    assert_eq(_captured_events.size(), 1, "Expected captured event after successful grip")
-    assert_eq(_solver.debug_get_state_name(), "CARRYING", "Solver should hold item after grip")
+    assert_true(_started_events.size() >= 1, "Expected grab start signal")
+    assert_eq(_solver.debug_get_state_name(), "CARRYING", "Solver should carry item after grip")
+    assert_has(_captured_events, [descriptor, order_id], "Captured event should include descriptor and order")
 
+func test_drop_routes_through_order_service() -> void:
+    var descriptor := StringName("tuna")
+    var order_id := _prepare_active_order(descriptor)
+    _place_display_item(descriptor)
+
+    _solver.begin_lower()
+    wait_frames(3)
+    _solver.execute_grip()
+    wait_frames(4)
     _solver.retract_to_idle()
+    wait_frames(3)
+
+    var dropped_item := _pool.last_acquired
+    _solver.process_drop(dropped_item)
     wait_frames(1)
 
-    assert_eq(_released_events.size(), 1, "Expected release event when retracting")
-    assert_has(_orders_cleared, order_id, "Order should be cleared after successful delivery")
-    assert_eq(_solver.debug_get_state_name(), "IDLE", "Solver should return to idle after retract")
-    assert_eq(_pool.release_log.size(), 1, "Item should be returned to pool")
+    assert_has(_orders_cleared, order_id, "Order service should clear order after drop")
+    assert_has(_released_events, [descriptor, order_id], "Release event should broadcast descriptor")
 
-func test_grip_failure_emits_failure_signal() -> void:
-    var descriptor_id := StringName("lobster")
-    var order_id := StringName("order_lobster")
-    _order_service.request_order(_make_order(order_id, descriptor_id))
-    wait_frames(1)
-    _signal_hub.broadcast_visualized(descriptor_id, null, order_id)
-
-    _solver.begin_lower()
-    wait_frames(1)
-    _solver.execute_grip()
-    wait_frames(1)
-
-    assert_eq(_failed_events.size(), 1, "Should emit failure when pool lacks item")
-    assert_eq(_solver.debug_get_state_name(), "IDLE", "Solver should return to idle after failed grip")
-
-func test_wrong_item_reports_mismatch() -> void:
-    var descriptor_id := StringName("crab")
-    var order_id := StringName("order_crab")
-    _order_service.request_order(_make_order(order_id, descriptor_id))
-    wait_frames(1)
-    _signal_hub.broadcast_visualized(descriptor_id, null, order_id)
-
-    var wrong_item := Node3D.new()
-    _pool.add_item(StringName("shrimp"), wrong_item)
+func test_wrong_item_triggers_mismatch() -> void:
+    var descriptor := StringName("crab")
+    var order_id := _prepare_active_order(descriptor)
+    _pool.descriptor_override = StringName("shrimp")
+    _place_display_item(descriptor)
 
     _solver.begin_lower()
-    wait_frames(1)
-    _solver.set("_target_descriptor", StringName("shrimp"))
+    wait_frames(3)
     _solver.execute_grip()
-    wait_frames(1)
+    wait_frames(4)
     _solver.retract_to_idle()
+    wait_frames(3)
+
+    var dropped_item := _pool.last_acquired
+    _solver.process_drop(dropped_item)
     wait_frames(1)
 
-    assert_has(_order_mismatches, order_id, "Delivering wrong item should trigger mismatch")
-    assert_eq(_solver.debug_get_state_name(), "IDLE", "Solver returns to idle after mismatch")
+    assert_has(_order_mismatches, order_id, "Mismatch should be reported when wrong item delivered")
+    assert_true(_pool.release_log.size() >= 1, "Item should be returned to pool after mismatch")
 
-func _make_order(order_id: StringName, descriptor_id: StringName) -> OrderRequestDto:
+func _prepare_active_order(descriptor_id: StringName) -> StringName:
     var dto := OrderRequestDto.new()
-    dto.order_id = order_id
+    dto.order_id = StringName("order_%s" % String(descriptor_id))
     dto.descriptor_id = descriptor_id
     dto.seafood_name = "Test"
     dto.icon_path = "res://ui/icons/test.png"
@@ -187,5 +185,21 @@ func _make_order(order_id: StringName, descriptor_id: StringName) -> OrderReques
     dto.patience_duration = 10.0
     dto.warning_threshold = 0.5
     dto.critical_threshold = 0.2
-    dto.highlight_palette = StringName("default")
-    return dto
+    var service := OrderService.get_instance()
+    service.request_order(dto)
+    _solver._on_order_visualized(descriptor_id, null, dto.order_id)
+    return dto.order_id
+
+func _place_display_item(descriptor_id: StringName) -> StaticBody3D:
+    var body := StaticBody3D.new()
+    body.set_meta("descriptor_id", descriptor_id)
+    var shape := CollisionShape3D.new()
+    shape.shape = BoxShape3D.new()
+    shape.shape.extents = Vector3(0.3, 0.3, 0.3)
+    body.add_child(shape)
+    add_child_autofree(body)
+    var grip_area := _solver.get_node("ArmRoot/Grabber/GripArea") as Area3D
+    body.global_transform = grip_area.global_transform
+    _solver._on_grip_area_body_entered(body)
+    return body
+

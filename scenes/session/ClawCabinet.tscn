@@ -1,4 +1,4 @@
-[gd_scene format=3 load_steps=7 uid="uid://clawcabinet"]
+[gd_scene format=3 load_steps=8 uid="uid://clawcabinet"]
 
 [ext_resource type="PackedScene" path="res://scenes/session/CabinetHighlightController.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://resources/meshes/environment/FreezerCabinet.tscn" id="2"]
@@ -6,6 +6,9 @@
 [ext_resource type="Resource" path="res://resources/data/cabinet_item_descriptors.tres" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/session/ClawRig.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/session/CabinetItemPool.tscn" id="6"]
+
+[sub_resource type="BoxShape3D" id="1"]
+extents = Vector3(0.6, 0.2, 0.6)
 
 [node name="ClawCabinet" type="Node3D"]
 script = ExtResource("3")
@@ -33,3 +36,14 @@ unique_name_in_owner = true
 [node name="ClawRig" parent="." instance=ExtResource("5")]
 unique_name_in_owner = true
 item_pool_path = NodePath("../CabinetItemPool")
+drop_zone_path = NodePath("../DropZone")
+
+[node name="DropZone" type="Area3D" parent="."]
+monitoring = true
+monitorable = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 1.4)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DropZone"]
+shape = SubResource("1")
