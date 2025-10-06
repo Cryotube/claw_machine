@@ -19,10 +19,18 @@ signal order_resolved_failure(order_id: StringName, reason: StringName, payload:
 static var _instance: Node
 
 var _orders: Dictionary = {}
+var _wave_patience_multiplier: float = 1.0
+var _wave_score_multiplier: float = 1.0
+var _configured_wave_index: int = 1
 var _durations: Dictionary = {}
 var _stage_cache: Dictionary = {}
 var _descriptors: Dictionary = {}
 var _icons: Dictionary = {}
+
+func configure_wave(patience_multiplier: float, score_multiplier: float, wave_index: int) -> void:
+    _wave_patience_multiplier = maxf(patience_multiplier, 0.1)
+    _wave_score_multiplier = maxf(score_multiplier, 0.0)
+    _configured_wave_index = max(1, wave_index)
 
 func _ready() -> void:
     _instance = self
@@ -52,7 +60,11 @@ func request_order(order: OrderRequestDto) -> void:
     order_copy.warning_threshold = order.warning_threshold
     order_copy.critical_threshold = order.critical_threshold
     order_copy.base_score = order.base_score
-    order_copy.wave_index = order.wave_index
+    if order_copy.wave_index == 0:
+        order_copy.wave_index = _configured_wave_index
+    order_copy.patience_duration = maxf(order_copy.patience_duration * _wave_patience_multiplier, 0.1)
+    var scaled_score := int(round(max(order_copy.base_score, 0) * _wave_score_multiplier))
+    order_copy.base_score = max(scaled_score, 0)
 
     var order_id := StringName(order_copy.order_id)
     _orders[order_id] = order_copy

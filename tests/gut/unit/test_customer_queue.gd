@@ -4,6 +4,7 @@ const OrderService = preload("res://autoload/order_service.gd")
 const SignalHub = preload("res://autoload/signal_hub.gd")
 const CustomerQueueScene = preload("res://scenes/session/CustomerQueue.tscn")
 const OrderRequestDto = preload("res://scripts/dto/order_request_dto.gd")
+const WaveSettingsDto = preload("res://scripts/dto/wave_settings_dto.gd")
 
 var _signal_hub
 var _order_service
@@ -76,3 +77,10 @@ func _make_order(id_str: String) -> OrderRequestDto:
     dto.warning_threshold = 0.35
     dto.critical_threshold = 0.15
     return dto
+
+func test_configure_wave_sets_schedule() -> void:
+    var queue: CustomerQueue = _queue
+    var schedule := PackedFloat32Array([0.1, 0.2, 0.3])
+    var settings := WaveSettingsDto.new(1, schedule, 0.05, 1.0, 2, 1.0, 1.0, {})
+    queue.configure_wave(settings, Callable())
+    assert_eq(queue.debug_get_scheduled_total(), 3, "Wave schedule count should match configuration")

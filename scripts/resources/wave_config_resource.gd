@@ -11,28 +11,35 @@ const ClutterProfileResource := preload("res://scripts/resources/clutter_profile
 @export var clutter_profile: ClutterProfileResource
 @export var base_metadata: Dictionary = {}
 @export var analytics_wave_tags: PackedStringArray = PackedStringArray()
+@export var score_multiplier_step: float = 0.08
 
 func get_settings(wave_index: int) -> WaveSettingsDto:
     var sanitized_wave: int = max(1, wave_index)
     var schedule := _build_schedule(sanitized_wave)
+    var warmup_delay: float = _get_warmup_delay(sanitized_wave)
     var patience_multiplier: float = _get_patience_multiplier(sanitized_wave)
     var clutter_level: int = _get_clutter_level(sanitized_wave)
     var density_multiplier: float = _get_density_multiplier(sanitized_wave)
+    var score_multiplier: float = _get_score_multiplier(sanitized_wave)
     var metadata := base_metadata.duplicate(true)
     metadata["wave_index"] = sanitized_wave
     metadata["spawn_count"] = schedule.size()
     metadata["patience_multiplier"] = patience_multiplier
     metadata["clutter_level"] = clutter_level
     metadata["density_multiplier"] = density_multiplier
+    metadata["warmup_delay_sec"] = warmup_delay
+    metadata["score_multiplier"] = score_multiplier
     if analytics_wave_tags.size() > 0:
         var tag_index: int = min(sanitized_wave - 1, analytics_wave_tags.size() - 1)
         metadata["analytics_tag"] = StringName(analytics_wave_tags[tag_index])
     return WaveSettingsDto.new(
         sanitized_wave,
         schedule,
+        warmup_delay,
         patience_multiplier,
         clutter_level,
         density_multiplier,
+        score_multiplier,
         metadata
     )
 
@@ -50,6 +57,11 @@ func _build_schedule(wave_index: int) -> PackedFloat32Array:
         return fallback
     return spawn_profile.build_schedule(wave_index)
 
+func _get_warmup_delay(wave_index: int) -> float:
+    if spawn_profile == null:
+        return 0.5
+    return spawn_profile.get_warmup_delay(wave_index)
+
 func _get_patience_multiplier(wave_index: int) -> float:
     if patience_multipliers.is_empty():
         return 1.0
@@ -66,3 +78,7 @@ func _get_density_multiplier(wave_index: int) -> float:
     if clutter_profile == null:
         return 1.0
     return clutter_profile.get_density_multiplier(wave_index)
+
+func _get_score_multiplier(wave_index: int) -> float:
+    var step: float = max(score_multiplier_step, 0.0)
+    return 1.0 + step * float(wave_index - 1)

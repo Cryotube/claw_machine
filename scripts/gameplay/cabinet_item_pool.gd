@@ -11,6 +11,9 @@ const CabinetItemDescriptor := preload("res://scripts/resources/cabinet_item_des
 var _pool_root: Node3D
 var _available: Dictionary = {}
 var _active_lookup: Dictionary = {}
+var _target_items_per_descriptor: int = 0
+var _current_clutter_level: int = 0
+var _current_density_multiplier: float = 1.0
 
 func _ready() -> void:
     _pool_root = get_node_or_null(pool_root_path) as Node3D
@@ -53,6 +56,46 @@ func release_item(item: Node3D) -> void:
 
 func get_descriptor_for(item: Node3D) -> StringName:
     return _active_lookup.get(item, StringName())
+
+func configure_for_wave(wave_index: int, clutter_level: int, density_multiplier: float, items_per_descriptor_target: int) -> void:
+    _current_clutter_level = max(clutter_level, 0)
+    _current_density_multiplier = max(density_multiplier, 0.0)
+    _target_items_per_descriptor = max(items_per_descriptor_target, items_per_descriptor)
+    _ensure_capacity(_target_items_per_descriptor)
+
+func get_current_clutter_level() -> int:
+    return _current_clutter_level
+
+func get_current_density_multiplier() -> float:
+    return _current_density_multiplier
+
+func _ensure_capacity(target: int) -> void:
+    if catalog == null or target <= 0:
+        return
+    for descriptor in catalog.get_descriptors():
+        if descriptor == null or not (descriptor is CabinetItemDescriptor):
+            continue
+        var typed_descriptor: CabinetItemDescriptor = descriptor
+        var descriptor_id: StringName = typed_descriptor.descriptor_id
+        if descriptor_id == StringName():
+            continue
+        if not _available.has(descriptor_id):
+            _available[descriptor_id] = []
+        var bucket: Array = _available[descriptor_id]
+        var active_count: int = 0
+        for active in _active_lookup.keys():
+            if _active_lookup[active] == descriptor_id:
+                active_count += 1
+        var total: int = bucket.size() + active_count
+        if total >= target:
+            continue
+        var needed: int = target - total
+        for _i in range(needed):
+            var item := _instantiate_descriptor(descriptor_id)
+            if item:
+                item.visible = false
+                bucket.append(item)
+        _available[descriptor_id] = bucket
 
 func _build_pool() -> void:
     _available.clear()

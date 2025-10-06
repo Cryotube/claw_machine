@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/wave_config_resource.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/curves/spawn_curves.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/data/clutter_profiles.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+spawn_profile = ExtResource("2")
+patience_multipliers = PackedFloat32Array(1.0, 0.95, 0.9, 0.85, 0.8)
+patience_floor = 0.6
+clutter_profile = ExtResource("3")
+base_metadata = {
+"designer_revision": "v1",
+"tuning_notes": "baseline progression curves"
+}
+analytics_wave_tags = PackedStringArray("wave_1", "wave_2", "wave_3", "wave_4", "wave_5")

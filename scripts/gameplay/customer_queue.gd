@@ -3,6 +3,7 @@ class_name CustomerQueue
 
 const OrderRequestDto = preload("res://scripts/dto/order_request_dto.gd")
 const SignalHub = preload("res://autoload/signal_hub.gd")
+const WaveSettingsDto = preload("res://scripts/dto/wave_settings_dto.gd")
 
 @export var customer_scene: PackedScene
 @export var spawn_marker_paths: Array[NodePath] = []
@@ -18,6 +19,13 @@ var _deferred_releases: Dictionary = {}
 
 @export var failure_release_default_sec: float = 0.5
 
+var _spawn_schedule: PackedFloat32Array = PackedFloat32Array()
+var _spawn_callable: Callable
+var _spawn_timer: SceneTreeTimer
+var _spawn_index: int = 0
+var _warmup_delay_sec: float = 0.0
+var _wave_total_spawns: int = 0
+
 func _ready() -> void:
     _collect_spawn_markers()
     var hub: Node = SignalHub.get_instance()
@@ -27,6 +35,7 @@ func _ready() -> void:
         hub.order_resolved_failure.connect(_on_order_failure)
 
 func _exit_tree() -> void:
+    _cancel_spawn_timer()
     var hub: Node = SignalHub.get_instance()
     if hub:
         if hub.order_requested.is_connected(_on_order_requested):
@@ -41,6 +50,19 @@ func _exit_tree() -> void:
     _pool.clear()
     _pending_orders.clear()
     _order_to_customer.clear()
+
+func configure_wave(settings: WaveSettingsDto, spawn_callable: Callable) -> void:
+    if settings == null:
+        return
+    _spawn_schedule = settings.spawn_schedule
+    _wave_total_spawns = _spawn_schedule.size()
+    _spawn_callable = spawn_callable
+    _spawn_index = 0
+    _warmup_delay_sec = max(settings.warmup_delay_sec, 0.0)
+    _cancel_spawn_timer()
+    if _wave_total_spawns == 0:
+        return
+    _schedule_next_spawn(_warmup_delay_sec)
 
 func _collect_spawn_markers() -> void:
     _spawn_markers.clear()
@@ -117,6 +139,12 @@ func debug_get_pool_size() -> int:
 func debug_get_last_spawned_rid() -> int:
     return _last_spawned_id
 
+func debug_get_scheduled_total() -> int:
+    return _wave_total_spawns
+
+func debug_has_active_timer() -> bool:
+    return _spawn_timer != null
+
 func get_customer_for_order(order_id: StringName) -> Node3D:
     return _order_to_customer.get(order_id, null)
 
@@ -182,3 +210,29 @@ func _release_customer(customer: Node3D) -> void:
     if not _pool.has(customer):
         _pool.append(customer)
     _try_spawn_pending()
+
+func _on_spawn_timer_timeout() -> void:
+    _spawn_timer = null
+    if not _spawn_callable.is_valid():
+        return
+    _spawn_callable.call()
+    _spawn_index += 1
+    if _spawn_index >= _spawn_schedule.size():
+        return
+    var delay: float = max(_spawn_schedule[_spawn_index], 0.05)
+    _schedule_next_spawn(delay)
+
+func _schedule_next_spawn(delay_sec: float) -> void:
+    _cancel_spawn_timer()
+    var tree := get_tree()
+    if tree == null:
+        return
+    var timer: SceneTreeTimer = tree.create_timer(max(delay_sec, 0.01))
+    timer.timeout.connect(_on_spawn_timer_timeout)
+    _spawn_timer = timer
+
+func _cancel_spawn_timer() -> void:
+    if _spawn_timer != null:
+        if _spawn_timer.timeout.is_connected(_on_spawn_timer_timeout):
+            _spawn_timer.timeout.disconnect(_on_spawn_timer_timeout)
+        _spawn_timer = null

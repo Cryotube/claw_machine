@@ -17,4 +17,4 @@ func get_next(index: int) -> OrderDefinition:
     if orders.is_empty():
         return null
     var clamped_index: int = wrapi(index, 0, orders.size())
-    return orders[clamped_index]
+    return orders[clamped_index] as OrderDefinition

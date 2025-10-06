@@ -1,5 +1,7 @@
 extends Node
 
+const WaveSettingsDto := preload("res://scripts/dto/wave_settings_dto.gd")
+
 static var _instance: Node
 
 var _events: Array[Dictionary] = []
@@ -49,6 +51,23 @@ func log_event(event_name: StringName, payload: Dictionary) -> void:
 
 func clear_events() -> void:
     _events.clear()
+
+func enqueue_wave(settings) -> void:
+    if settings == null:
+        return
+    var payload := {}
+    if settings is WaveSettingsDto:
+        payload = {
+            "wave_index": settings.wave_index,
+            "spawn_count": settings.spawn_schedule.size(),
+            "patience_multiplier": settings.patience_multiplier,
+            "clutter_level": settings.cabinet_clutter_level,
+            "density_multiplier": settings.cabinet_density_multiplier,
+            "score_multiplier": settings.score_multiplier,
+        }
+    elif settings is Dictionary:
+        payload = settings.duplicate(true)
+    log_event(StringName("wave_settings"), payload)
 
 func debug_get_events() -> Array[Dictionary]:
     return _events.duplicate(true)

@@ -19,6 +19,10 @@ signal lives_updated(lives: int)
 signal order_resolved_success(order_id: StringName, payload: Dictionary)
 signal order_resolved_failure(order_id: StringName, reason: StringName, payload: Dictionary)
 signal order_failure_resolved(order_id: StringName, payload: Dictionary)
+signal wave_started(wave_index: int, metadata: Dictionary)
+signal wave_progress(wave_index: int, spawned: int, total: int)
+signal wave_warning(wave_index: int, payload: Dictionary)
+signal wave_completed(wave_index: int, summary: Dictionary)
 
 static var _instance: Node
 
@@ -78,3 +82,16 @@ func broadcast_order_failure(order_id: StringName, reason: StringName, payload: 
 
 func broadcast_order_failure_resolved(order_id: StringName, payload: Dictionary) -> void:
     emit_signal("order_failure_resolved", order_id, payload)
+
+func broadcast_wave_started(wave_index: int, metadata: Dictionary) -> void:
+    emit_signal("wave_started", wave_index, metadata.duplicate(true))
+
+func broadcast_wave_progress(wave_index: int, spawned: int, total: int) -> void:
+    emit_signal("wave_progress", wave_index, spawned, total)
+
+func broadcast_wave_warning(wave_index: int, payload: Dictionary) -> void:
+    emit_signal("wave_warning", wave_index, payload.duplicate(true))
+
+func broadcast_wave_completed(wave_index: int, summary: Dictionary) -> void:
+    emit_signal("wave_completed", wave_index, summary.duplicate(true))
+
