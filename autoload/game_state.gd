@@ -16,6 +16,7 @@ var _starting_lives: int = 3
 
 var _score: int = 0
 var _combo: int = 0
+var _combo_peak: int = 0
 var _lives: int = 3
 var _wave_index: int = 0
 var _orders_into_wave: int = 0
@@ -61,6 +62,7 @@ func configure(options: Dictionary) -> void:
 func reset_state() -> void:
     _score = 0
     _combo = 0
+    _combo_peak = 0
     _lives = _starting_lives
     _wave_index = 0
     _orders_into_wave = 0
@@ -69,6 +71,8 @@ func reset_state() -> void:
 func apply_success(base_points: int, normalized_remaining: float, metadata: Dictionary = {}) -> Dictionary:
     var clamped_remaining := clampf(normalized_remaining, 0.0, 1.0)
     _combo += 1
+    if _combo > _combo_peak:
+        _combo_peak = _combo
     var multiplier := _get_combo_multiplier(_combo)
     var scaled_points := int(round(base_points * multiplier))
     var time_bonus := int(round(base_points * clamped_remaining * 0.5))
@@ -95,6 +99,7 @@ func apply_success(base_points: int, normalized_remaining: float, metadata: Dict
         "lives": _lives,
         "wave_index": result_wave_index,
         "combo_reset": false,
+        "combo_peak": _combo_peak,
     }
 
 func apply_failure(reason: StringName, metadata: Dictionary = {}) -> Dictionary:
@@ -119,6 +124,7 @@ func apply_failure(reason: StringName, metadata: Dictionary = {}) -> Dictionary:
         "failure_reason": reason,
         "combo_snapshot": previous_combo,
         "failure_streak": _failure_streak,
+        "combo_peak": _combo_peak,
     }
 
 func get_score() -> int:
@@ -126,6 +132,9 @@ func get_score() -> int:
 
 func get_combo() -> int:
     return _combo
+
+func get_combo_peak() -> int:
+    return _combo_peak
 
 func get_lives() -> int:
     return _lives

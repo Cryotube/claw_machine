@@ -61,6 +61,28 @@ func test_reduced_motion_flag_persists() -> void:
 			var accessibility: Dictionary = parsed.get("accessibility", {})
 			assert_true(accessibility.get("reduced_motion", false), "Accessibility state should record reduced motion flag")
 
+func test_run_history_appends_and_caps() -> void:
+	if _service == null:
+		return
+	for i in range(30):
+		_service.append_run_record({
+			"score": i,
+			"wave": i % 6,
+			"duration_sec": 5.0 + float(i),
+			"failure_reason": "timeout",
+			"timestamp_sec": 100 + i,
+		})
+	_service.flush_now()
+	var runs := _service.get_run_records()
+	assert_true(runs.size() <= 25, "Run history should cap at 25 entries")
+	assert_eq(int(runs[0].get("score", -1)), 29, "Most recent run should be first in history")
+	var summary := _service.get_records_summary()
+	assert_eq(int(summary.get("high_score", -1)), 29, "High score should track maximum score")
+	assert_eq(int(summary.get("best_wave", -1)), 5, "Best wave should track highest wave reached")
+	var fastest := float(summary.get("fastest_duration_sec", 0.0))
+	assert_true(fastest > 0.0, "Fastest duration should record minimum non-zero duration")
+	assert_eq(int(summary.get("previous_score", -1)), 28, "Previous score should reflect the run before the latest")
+
 func _delete_test_file() -> void:
 	if not FileAccess.file_exists(_test_path):
 		return

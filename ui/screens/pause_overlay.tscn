@@ -14,33 +14,62 @@ color = Color(0, 0, 0, 0.45)
 mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 [node name="Card" type="Panel" parent="."]
-anchor_left = 0.3
-anchor_right = 0.7
-anchor_top = 0.25
-anchor_bottom = 0.75
+anchor_left = 0.25
+anchor_right = 0.75
+anchor_top = 0.18
+anchor_bottom = 0.78
 
-[node name="VBox" type="VBoxContainer" parent="Card"]
+[node name="Layout" type="VBoxContainer" parent="Card"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_constants/separation = 14
-alignment = BoxContainer.ALIGNMENT_CENTER
+theme_override_constants/separation = 16
+alignment = 1
 
-[node name="Title" type="Label" parent="Card/VBox"]
+[node name="Title" type="Label" parent="Card/Layout"]
+unique_name_in_owner = true
 text = "Paused"
-horizontal_alignment = HorizontalAlignment.CENTER
+horizontal_alignment = 1
+custom_minimum_size = Vector2(0, 48)
 
-[node name="ResumeButton" type="Button" parent="Card/VBox"]
+[node name="ResumeButton" type="Button" parent="Card/Layout"]
 unique_name_in_owner = true
 text = "Resume"
+custom_minimum_size = Vector2(220, 64)
 
-[node name="RestartButton" type="Button" parent="Card/VBox"]
+[node name="RestartButton" type="Button" parent="Card/Layout"]
 unique_name_in_owner = true
 text = "Restart Wave"
+custom_minimum_size = Vector2(220, 64)
 
-[node name="OptionsButton" type="Button" parent="Card/VBox"]
+[node name="OptionsButton" type="Button" parent="Card/Layout"]
 unique_name_in_owner = true
 text = "Options"
+custom_minimum_size = Vector2(220, 64)
 
-[node name="QuitButton" type="Button" parent="Card/VBox"]
+[node name="QuitButton" type="Button" parent="Card/Layout"]
 unique_name_in_owner = true
 text = "Quit to Menu"
+custom_minimum_size = Vector2(220, 64)
+
+[node name="QuickToggleBar" type="HBoxContainer" parent="."]
+anchor_left = 0.08
+anchor_right = 0.92
+anchor_bottom = 1.0
+offset_bottom = -48.0
+offset_top = -120.0
+theme_override_constants/separation = 24
+
+[node name="HapticsToggle" type="CheckBox" parent="QuickToggleBar"]
+unique_name_in_owner = true
+text = "Haptics"
+custom_minimum_size = Vector2(160, 60)
+
+[node name="PaletteButton" type="Button" parent="QuickToggleBar"]
+unique_name_in_owner = true
+text = "Palette: Default"
+custom_minimum_size = Vector2(220, 60)
+
+[node name="SensitivityButton" type="Button" parent="QuickToggleBar"]
+unique_name_in_owner = true
+text = "Sensitivity: 1.0×"
+custom_minimum_size = Vector2(220, 60)

@@ -18,3 +18,14 @@ res://ui/components/VirtualJoystick.tscn
 res://ui/components/TutorialOverlay.tscn
 res://tests/gut/unit/test_order_banner.gd
 res://tests/gut/unit/test_order_visual_sync.gd
+res://autoload/accessibility_service.gd
+res://autoload/audio_director.gd
+res://autoload/localization_service.gd
+res://autoload/signal_hub.gd
+res://scripts/gameplay/claw_input_controller.gd
+res://scripts/ui/tutorial_overlay.gd
+res://tests/gut/test_runner.gd
+res://autoload/game_state.gd
+res://autoload/persistence_service.gd
+res://scripts/services/order_resolution_pipeline.gd
+res://tests/gut/ui/test_scene_director.gd

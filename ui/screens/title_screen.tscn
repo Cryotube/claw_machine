@@ -10,42 +10,95 @@ script = ExtResource("1")
 [node name="Background" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.0431373, 0.0901961, 0.152941, 1.0)
+color = Color(0.043137, 0.090196, 0.152941, 1.0)
 
-[node name="VBox" type="VBoxContainer" parent="."]
-anchor_left = 0.1
-anchor_right = 0.9
-anchor_top = 0.25
-anchor_bottom = 0.75
-theme_override_constants/separation = 16
+[node name="HeroLayer" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="HeroParallax" type="TextureRect" parent="HeroLayer"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch_mode = 6
+modulate = Color(1, 1, 1, 0.85)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_right = -48.0
+offset_top = 72.0
+offset_bottom = -96.0
+
+[node name="LayoutRoot" type="VBoxContainer" parent="SafeArea"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 24
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="VBox"]
+[node name="TitleLabel" type="Label" parent="SafeArea/LayoutRoot"]
+unique_name_in_owner = true
 text = "Claw & Snackle"
 horizontal_alignment = 1
-vertical_alignment = 1
 add_theme_color_override("font_color", Color(0.921569, 0.964706, 1, 1))
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 64)
 
-[node name="Subtitle" type="Label" parent="VBox"]
+[node name="Subtitle" type="Label" parent="SafeArea/LayoutRoot"]
+unique_name_in_owner = true
 text = "Tap to begin your shift"
 horizontal_alignment = 1
 add_theme_color_override("font_color", Color(0.815686, 0.870588, 0.94902, 1))
 
-[node name="StartButton" type="Button" parent="VBox"]
+[node name="PrimaryTile" type="Button" parent="SafeArea/LayoutRoot"]
 unique_name_in_owner = true
-text = "Start"
+text = "Start Score Run"
+custom_minimum_size = Vector2(420, 120)
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(220, 72)
 
-[node name="LocaleButton" type="Button" parent="VBox"]
-unique_name_in_owner = true
-text = "Toggle Locale"
+[node name="SecondaryTiles" type="GridContainer" parent="SafeArea/LayoutRoot"]
+columns = 2
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 18
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(220, 48)
+
+[node name="TutorialTile" type="Button" parent="SafeArea/LayoutRoot/SecondaryTiles"]
+unique_name_in_owner = true
+text = "Tutorial"
+custom_minimum_size = Vector2(280, 96)
+
+[node name="PracticeTile" type="Button" parent="SafeArea/LayoutRoot/SecondaryTiles"]
+unique_name_in_owner = true
+text = "Practice"
+custom_minimum_size = Vector2(280, 96)
+
+[node name="OptionsTile" type="Button" parent="SafeArea/LayoutRoot/SecondaryTiles"]
+unique_name_in_owner = true
+text = "Options"
+custom_minimum_size = Vector2(280, 96)
+
+[node name="RecordsTile" type="Button" parent="SafeArea/LayoutRoot/SecondaryTiles"]
+unique_name_in_owner = true
+text = "Records"
+custom_minimum_size = Vector2(280, 96)
 
 [node name="BuildLabel" type="Label" parent="."]
-offset_left = 24.0
-offset_top = 24.0
+offset_left = 32.0
+offset_top = 28.0
 text = "v0.1.0"
 add_theme_color_override("font_color", Color(0.67451, 0.823529, 0.94902, 1))
+
+[node name="LocaleButton" type="Button" parent="."]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -88.0
+offset_right = -32.0
+offset_bottom = -24.0
+text = "Toggle Locale"

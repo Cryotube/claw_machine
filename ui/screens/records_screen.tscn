@@ -25,19 +25,19 @@ theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="Panel/VBox"]
 text = "Records"
-horizontal_alignment = HorizontalAlignment.CENTER
+horizontal_alignment = 1
 
 [node name="SummaryLabel" type="Label" parent="Panel/VBox"]
 unique_name_in_owner = true
-horizontal_alignment = HorizontalAlignment.CENTER
+horizontal_alignment = 1
 autowrap_mode = TextServer.AUTOWRAP_WORD
 
 [node name="HistoryHeader" type="Label" parent="Panel/VBox"]
 text = "Recent Runs"
-horizontal_alignment = HorizontalAlignment.CENTER
+horizontal_alignment = 1
 
 [node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
-size_flags_vertical = Control.SIZE_EXPAND_FILL
+size_flags_vertical = 3
 
 [node name="HistoryContainer" type="VBoxContainer" parent="Panel/VBox/Scroll"]
 unique_name_in_owner = true

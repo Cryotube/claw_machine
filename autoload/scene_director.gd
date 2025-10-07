@@ -12,7 +12,7 @@ const SCENE_REGISTRY: Dictionary[StringName, String] = {
 	StringName("main_menu"): "res://ui/screens/main_menu.tscn",
 	StringName("session"): "res://scenes/session/SessionRoot.tscn",
 	StringName("tutorial"): "res://scenes/tutorial/TutorialPlayground.tscn",
-	StringName("practice_stub"): "res://ui/screens/practice_placeholder.tscn",
+	StringName("practice"): "res://scenes/practice/PracticePlayground.tscn",
 	StringName("records"): "res://ui/screens/records_screen.tscn",
 	StringName("game_over"): "res://ui/screens/game_over_screen.tscn",
 }
@@ -41,6 +41,7 @@ var _analytics: AnalyticsStub
 var _hub: SignalHub
 var _settings: Node
 var _reduced_motion_enabled: bool = false
+var _input_locked: bool = false
 
 func _ready() -> void:
 	_instance = self
@@ -93,6 +94,10 @@ func get_current_scene_id() -> StringName:
 
 func is_transition_in_progress() -> bool:
 	return _transition_in_progress
+
+func lock_input(locked: bool) -> void:
+	_input_locked = locked
+	_update_pause_state()
 
 func transition_to(scene_id: StringName, metadata: Dictionary = {}) -> void:
 	if _transition_in_progress:
@@ -232,7 +237,7 @@ func _fade_to(target_alpha: float) -> void:
 	await tween.finished
 
 func _update_pause_state() -> void:
-	var should_pause := false
+	var should_pause := _input_locked
 	for entry in _overlay_stack:
 		if entry.get("id", StringName()) == StringName("pause"):
 			should_pause = true

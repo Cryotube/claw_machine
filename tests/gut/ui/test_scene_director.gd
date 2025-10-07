@@ -28,6 +28,14 @@ func test_transition_to_tutorial_scene() -> void:
 	await wait_frames(20)
 	assert_eq(director.get_current_scene_id(), StringName("tutorial"), "SceneDirector should load tutorial scene")
 
+func test_transition_to_practice_scene() -> void:
+	var director := SceneDirector.get_instance()
+	if director == null:
+		return
+	director.transition_to(StringName("practice"))
+	await wait_frames(20)
+	assert_eq(director.get_current_scene_id(), StringName("practice"), "SceneDirector should load practice scene")
+
 func test_push_pop_pause_overlay() -> void:
 	var director := SceneDirector.get_instance()
 	if director == null:

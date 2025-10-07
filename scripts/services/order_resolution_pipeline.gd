@@ -6,6 +6,8 @@ const GameState := preload("res://autoload/game_state.gd")
 const SignalHub := preload("res://autoload/signal_hub.gd")
 const AnalyticsStub := preload("res://autoload/analytics_stub.gd")
 const AudioDirector := preload("res://autoload/audio_director.gd")
+const PersistenceService := preload("res://autoload/persistence_service.gd")
+const SceneDirector := preload("res://autoload/scene_director.gd")
 const ComboCurveProfile := preload("res://scripts/resources/combo_curve_profile.gd")
 const WaveScheduleResource := preload("res://scripts/resources/wave_schedule_resource.gd")
 const AnalyticsConfigResource := preload("res://scripts/resources/analytics_config_resource.gd")
@@ -19,6 +21,9 @@ var _game_state: GameState
 var _signal_hub: SignalHub
 var _analytics: AnalyticsStub
 var _audio: AudioDirector
+var _persistence: PersistenceService
+var _run_start_time_ms: int = 0
+var _game_over_dispatched: bool = false
 
 func _ready() -> void:
     _refresh_references()
@@ -34,6 +39,7 @@ func _refresh_references() -> void:
     _signal_hub = SignalHub.get_instance()
     _analytics = AnalyticsStub.get_instance()
     _audio = AudioDirector.get_instance()
+    _persistence = PersistenceService.get_instance()
 
 func _apply_configuration() -> void:
     _configure_game_state()
@@ -70,6 +76,8 @@ func _configure_game_state() -> void:
     if not options.is_empty():
         options["score_reset"] = true
         _game_state.configure(options)
+    _run_start_time_ms = Time.get_ticks_msec()
+    _game_over_dispatched = false
 
 func _configure_analytics() -> void:
     if _analytics == null:
@@ -110,6 +118,7 @@ func _on_order_failure(order_id: StringName, reason: StringName, payload: Dictio
     _broadcast_failure(order_id, reason, payload, state)
     _log_analytics(StringName("order_failed"), order_id, payload, state, reason)
     _play_audio(StringName("order_failure"))
+    _maybe_handle_game_over(state, reason)
 
 func _broadcast_success(order_id: StringName, payload: Dictionary, state: Dictionary) -> void:
     if _signal_hub:
@@ -164,3 +173,27 @@ func _build_analytics_payload(order_id: StringName, payload: Dictionary, state: 
 func _play_audio(event_name: StringName) -> void:
     if _audio and event_name != StringName():
         _audio.play_event(event_name)
+
+func _maybe_handle_game_over(state: Dictionary, reason: StringName) -> void:
+    if _game_over_dispatched:
+        return
+    var lives := int(state.get("lives", 0))
+    if lives > 0:
+        return
+    _game_over_dispatched = true
+    var now_ms := Time.get_ticks_msec()
+    var duration_sec := max((now_ms - _run_start_time_ms) / 1000.0, 0.0)
+    var summary := {
+        "score": _game_state.get_score() if _game_state else 0,
+        "wave": int(state.get("wave_index", _game_state.get_wave_index() if _game_state else 0)),
+        "failure_reason": String(reason),
+        "duration_sec": float(duration_sec),
+        "combo_peak": _game_state.get_combo_peak() if _game_state else int(state.get("combo_peak", 0)),
+        "timestamp_sec": Time.get_unix_time_from_system(),
+        "timestamp_ms": now_ms,
+    }
+    if _persistence and _persistence.has_method("append_run_record"):
+        _persistence.append_run_record(summary)
+    var director := SceneDirector.get_instance()
+    if director:
+        director.request_game_over(summary)

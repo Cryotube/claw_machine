@@ -77,6 +77,11 @@ const FAILURE_COPY := {
 	"fallback": "Almost! Let's try again.\nAim the claw and keep an eye on the patience meter.",
 }
 
+const SUMMARY_COPY := {
+	"key": StringName("tutorial_summary_complete"),
+	"fallback": "Nice work! You completed onboarding.\nHead back to the menu to start a score run.",
+}
+
 func start() -> void:
 	if _started:
 		return
@@ -257,8 +262,7 @@ func _log_step_completion(step: int, duration_ms: int) -> void:
 		return
 	var payload := {
 		"step_id": _step_to_string(step),
-		"duration_ms": duration_ms,
-		"timestamp_ms": Time.get_ticks_msec()
+		"duration": float(duration_ms) / 1000.0
 	}
 	_analytics.log_event(StringName("tutorial_step_completed"), payload)
 
@@ -320,4 +324,11 @@ func _finalize_tutorial() -> void:
 	_disconnect_signals()
 	if _claw_input:
 		_claw_input.reset_control_gates()
+	if _tutorial_overlay:
+		_tutorial_overlay.dismissed.connect(_on_summary_dismissed, CONNECT_ONE_SHOT)
+		_show_overlay_localized(SUMMARY_COPY.get("key", StringName()), SUMMARY_COPY.get("fallback", "Tutorial complete!"))
+	else:
+		SceneDirector.get_instance().transition_to(StringName("main_menu"), {"entry": "tutorial_complete"})
+
+func _on_summary_dismissed() -> void:
 	SceneDirector.get_instance().transition_to(StringName("main_menu"), {"entry": "tutorial_complete"})

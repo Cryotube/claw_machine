@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://practice_playground"]
+
+[ext_resource type="PackedScene" path="res://scenes/session/SessionRoot.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/practice/practice_playground.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/services/practice_orchestrator.gd" id="3"]
+
+[node name="PracticePlayground" type="Node3D"]
+script = ExtResource("2")
+
+[node name="SessionRoot" parent="." instance=ExtResource("1")]
+unique_name_in_owner = true
+
+[node name="PracticeOrchestrator" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3")
+session_root_path = NodePath("../SessionRoot")
+instructions_overlay_path = NodePath("../SessionRoot/UI/TutorialOverlay")

@@ -132,6 +132,14 @@ func _build_default_catalog() -> Dictionary:
 			StringName("en"): "Almost! Let's try again.\nAim the claw and keep an eye on the patience meter.",
 			StringName("ja"): "惜しい！もう一度挑戦しよう。\n爪を狙って忍耐メーターを確認だ。",
 		},
+		StringName("tutorial_summary_complete"): {
+			StringName("en"): "Nice work! You completed onboarding.\nHead back to the menu to start a score run.",
+			StringName("ja"): "お疲れさま！チュートリアル完了です。\nメニューに戻ってスコアランを始めよう！",
+		},
+		StringName("practice_overlay_instructions"): {
+			StringName("en"): "Practice freely! Grab seafood, test the claw, and perfect your drops.",
+			StringName("ja"): "自由に練習しよう！\n爪を操作して海鮮を掴み、ドロップを極めてみてね。",
+		},
 		StringName("title_screen_title"): {
 			StringName("en"): "Claw & Snackle",
 			StringName("ja"): "クロー＆スナックル",
@@ -147,5 +155,49 @@ func _build_default_catalog() -> Dictionary:
 		StringName("title_screen_toggle_locale"): {
 			StringName("en"): "Toggle Locale",
 			StringName("ja"): "言語を切り替え",
+		},
+		StringName("title_screen_tutorial"): {
+			StringName("en"): "Tutorial",
+			StringName("ja"): "チュートリアル",
+		},
+		StringName("title_screen_practice"): {
+			StringName("en"): "Practice",
+			StringName("ja"): "練習場",
+		},
+		StringName("title_screen_options"): {
+			StringName("en"): "Options",
+			StringName("ja"): "オプション",
+		},
+		StringName("title_screen_records"): {
+			StringName("en"): "Records",
+			StringName("ja"): "記録",
+		},
+		StringName("main_menu_header"): {
+			StringName("en"): "Main Menu",
+			StringName("ja"): "メインメニュー",
+		},
+		StringName("main_menu_start"): {
+			StringName("en"): "Start Score Run",
+			StringName("ja"): "スコアラン開始",
+		},
+		StringName("main_menu_tutorial"): {
+			StringName("en"): "Tutorial",
+			StringName("ja"): "チュートリアル",
+		},
+		StringName("main_menu_practice"): {
+			StringName("en"): "Practice",
+			StringName("ja"): "練習",
+		},
+		StringName("main_menu_options"): {
+			StringName("en"): "Options",
+			StringName("ja"): "オプション",
+		},
+		StringName("main_menu_records"): {
+			StringName("en"): "Records",
+			StringName("ja"): "記録",
+		},
+		StringName("main_menu_quit"): {
+			StringName("en"): "Quit",
+			StringName("ja"): "終了",
 		},
 	}
