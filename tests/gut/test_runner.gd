@@ -8,6 +8,8 @@ const TEST_PATHS := [
     "res://tests/gut/unit/test_order_visual_sync.gd",
     "res://tests/gut/unit/test_claw_input_controller.gd",
     "res://tests/gut/unit/test_claw_rig_solver.gd",
+    "res://tests/gut/unit/test_persistence_service.gd",
+    "res://tests/gut/unit/test_tutorial_overlay.gd",
     "res://tests/gut/unit/test_wave_config.gd",
 ]
 

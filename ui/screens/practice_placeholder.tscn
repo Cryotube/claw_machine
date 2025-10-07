@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://practice_placeholder"]
+
+[ext_resource type="Script" path="res://scripts/ui/placeholder_screen.gd" id="1"]
+
+[node name="PracticePlaceholder" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+title = "Practice Mode"
+description = "Free-play practice scene will land after core tutorial work.\nStay tuned for adjustable cabinet setups and claw sandbox."
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 0.15
+anchor_right = 0.85
+anchor_top = 0.2
+anchor_bottom = 0.8
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 16
+alignment = BoxContainer.ALIGNMENT_CENTER
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+text = "Practice"
+horizontal_alignment = HorizontalAlignment.CENTER
+
+[node name="BodyLabel" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+horizontal_alignment = HorizontalAlignment.CENTER
+autowrap_mode = TextServer.AUTOWRAP_WORD
+
+[node name="BackButton" type="Button" parent="Panel/VBox"]
+unique_name_in_owner = true
+text = "Back to Menu"

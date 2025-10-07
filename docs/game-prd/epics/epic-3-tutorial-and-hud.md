@@ -17,6 +17,7 @@ Deliver a polished first-time user experience with guided claw training, adaptiv
 1. **Story 3.1 – Tutorial Flow & Input Gating:** Script tutorial steps, lock controls until objectives met, and log completion flag in persistence.
 2. **Story 3.2 – Responsive HUD & Pause Overlay:** Implement HUD canvas layer with thumb-friendly controls, pause menu, and orientation adjustments.
 3. **Story 3.3 – Accessibility Toggles & Localization Hooks:** Wire colorblind palettes, haptic toggle, camera sensitivity slider, and string localization pipeline.
+4. **Story 3.4 – SceneDirector & Navigation Shell:** Build title/menu/pause/options/records scenes, drive transitions through SceneDirector, and emit analytics events.
 
 ## Dependencies & Constraints
 - Requires Epic 1 loop completion to demonstrate actual gameplay interactions.

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://navigation_root"]
+
+[ext_resource type="Script" path="res://scripts/ui/navigation_root.gd" id="1"]
+
+[node name="NavigationRoot" type="Node"]
+script = ExtResource("1")

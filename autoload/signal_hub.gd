@@ -23,6 +23,9 @@ signal wave_started(wave_index: int, metadata: Dictionary)
 signal wave_progress(wave_index: int, spawned: int, total: int)
 signal wave_warning(wave_index: int, payload: Dictionary)
 signal wave_completed(wave_index: int, summary: Dictionary)
+signal navigation_transition(scene_id: StringName, metadata: Dictionary)
+signal overlay_shown(overlay_id: StringName, metadata: Dictionary)
+signal overlay_hidden(overlay_id: StringName)
 
 static var _instance: Node
 
@@ -95,3 +98,11 @@ func broadcast_wave_warning(wave_index: int, payload: Dictionary) -> void:
 func broadcast_wave_completed(wave_index: int, summary: Dictionary) -> void:
     emit_signal("wave_completed", wave_index, summary.duplicate(true))
 
+func broadcast_navigation(scene_id: StringName, metadata: Dictionary) -> void:
+    emit_signal("navigation_transition", scene_id, metadata.duplicate(true))
+
+func broadcast_overlay_shown(overlay_id: StringName, metadata: Dictionary) -> void:
+    emit_signal("overlay_shown", overlay_id, metadata.duplicate(true))
+
+func broadcast_overlay_hidden(overlay_id: StringName) -> void:
+    emit_signal("overlay_hidden", overlay_id)

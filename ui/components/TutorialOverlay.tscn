@@ -41,6 +41,7 @@ anchor_bottom = 1.0
 custom_constants/separation = 22
 
 [node name="Title" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
 label_settings = SubResource("3")
 text = "Welcome to Claw & Snackle"
 horizontal_alignment = 1
@@ -62,4 +63,3 @@ text = "Got it — Let's Serve Cats!"
 
 [node name="AutoHideTimer" type="Timer" parent="."]
 one_shot = true
-

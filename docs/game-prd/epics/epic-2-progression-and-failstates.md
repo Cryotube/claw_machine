@@ -17,6 +17,7 @@ Introduce the systems that escalate difficulty across waves, enforce failure con
 1. **Story 2.1 – Patience Failure Consequences:** Trigger failure animations, deduct lives, and emit haptic/audio cues when timers expire.
 2. **Story 2.2 – Wave Pacing & Difficulty Scaling:** Apply `WaveConfig` curves to spawn rates, patience multipliers, and clutter pools while profiling frame time.
 3. **Story 2.3 – Score Tracking & Persistence:** Record score, combo, and high score metrics, persisting runs via encrypted saves and analytics events.
+4. **Story 2.4 – Audio & Haptics Polish:** Configure audio buses, event table, and haptic feedback so successes, failures, and navigation feel responsive and accessible.
 
 ## Dependencies & Constraints
 - Relies on Epic 1 systems for base order loop and signal plumbing.

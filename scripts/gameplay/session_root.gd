@@ -17,6 +17,7 @@ const SessionHUD = preload("res://scripts/ui/session_hud.gd")
 const OrderCatalog := preload("res://scripts/resources/order_catalog.gd")
 const ORDER_CATALOG: OrderCatalog = preload("res://resources/data/order_catalog.tres")
 const TutorialOverlay := preload("res://scripts/ui/tutorial_overlay.gd")
+const SceneDirector := preload("res://autoload/scene_director.gd")
 
 @onready var _queue: CustomerQueue = %CustomerQueue
 @onready var _order_banner: OrderBanner = %OrderBanner
@@ -52,6 +53,10 @@ func _input(event: InputEvent) -> void:
         _spawn_debug_order()
     elif event.is_action_pressed("serve_current_order") and _active_order_id != StringName():
         OrderService.get_instance().complete_order(_active_order_id)
+    elif event.is_action_pressed("pause"):
+        var director := SceneDirector.get_instance()
+        if director:
+            director.push_overlay(StringName("pause"), {"context": "session"})
 
 func _connect_signals() -> void:
     var hub := SignalHub.get_instance()
@@ -122,7 +127,7 @@ func _on_combo_updated(combo_count: int, multiplier: float) -> void:
         _order_banner.update_combo(combo_count, multiplier)
 
 func _show_tutorial_if_needed() -> void:
-    var settings := Settings.get_instance()
+    var settings: Node = Settings.get_instance()
     if settings == null:
         return
     if settings.tutorial_completed:
@@ -132,9 +137,9 @@ func _show_tutorial_if_needed() -> void:
         _tutorial_overlay.show_overlay()
 
 func _on_tutorial_dismissed() -> void:
-    var settings := Settings.get_instance()
+    var settings: Node = Settings.get_instance()
     if settings and settings.has_method("mark_tutorial_complete"):
-        settings.mark_tutorial_complete()
+        settings.mark_tutorial_complete("tutorial_overlay")
 
 func _spawn_debug_order() -> void:
     if ORDER_CATALOG == null or ORDER_CATALOG.orders.is_empty():

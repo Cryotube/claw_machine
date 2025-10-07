@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://options_screen"]
+
+[ext_resource type="Script" path="res://scripts/ui/options_screen.gd" id="1"]
+
+[node name="OptionsOverlay" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.3)
+mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 0.18
+anchor_right = 0.82
+anchor_top = 0.15
+anchor_bottom = 0.85
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 12
+
+[node name="Header" type="Label" parent="Panel/VBox"]
+text = "Options"
+horizontal_alignment = HorizontalAlignment.CENTER
+
+[node name="HapticsToggle" type="CheckBox" parent="Panel/VBox"]
+unique_name_in_owner = true
+text = "Enable Haptics"
+
+[node name="ReducedMotionToggle" type="CheckBox" parent="Panel/VBox"]
+unique_name_in_owner = true
+text = "Reduce Motion"
+
+[node name="ColorblindLabel" type="Label" parent="Panel/VBox"]
+text = "Colorblind Palette"
+
+[node name="ColorblindOption" type="OptionButton" parent="Panel/VBox"]
+unique_name_in_owner = true
+size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+[node name="SensitivityLabel" type="Label" parent="Panel/VBox"]
+text = "Camera Sensitivity"
+
+[node name="SensitivitySlider" type="HSlider" parent="Panel/VBox"]
+unique_name_in_owner = true
+min_value = 0.5
+max_value = 2.0
+step = 0.05
+value = 1.0
+
+[node name="CloseButton" type="Button" parent="Panel/VBox"]
+unique_name_in_owner = true
+text = "Close"

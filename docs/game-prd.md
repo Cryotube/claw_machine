@@ -21,6 +21,20 @@ The game targets claw machine and UFO catcher enthusiasts who want a faithful ph
 | 2025-09-30 | v0.2    | Updated goals/background for mobile release and art/performance targets.     | John (Game PM) |
 | 2025-09-30 | v0.1    | Initial PRD draft seeded with project brief details.                         | John (Game PM) |
 
+## Release Roadmap
+| Milestone | Target | Scope Highlights | Readiness Criteria |
+|-----------|--------|------------------|--------------------|
+| M1 – Scene Shell & Navigation | 2025-10-21 | `SceneDirector` autoload, Title/Main Menu/Pause/Game Over scenes, safe-area compliant navigation, analytics boot events | All scenes load from title flow, headless smoke covers navigation, UX spec addendum signed off |
+| M2 – Tutorial & Options | 2025-11-04 | Tutorial orchestrator with gated steps, practice scene, pause overlay quick toggles, options & accessibility UI | Tutorial completion rate ≥90% in QA lab, toggles persist and reapply on boot, device orientation QA pass |
+| M3 – Progression & Persistence | 2025-11-18 | PersistenceService, run summary records, high-score/records screens, localized UI copy, analytics telemetry flush | Save/load automated tests green, records screen matches localization checklist, analytics events verified |
+| M4 – Audio, VFX & Release QA | 2025-12-02 | Audio bus & haptic polish, failure/success VFX, performance tuning, regression automation, mobile packaging | 60 FPS sustained on iPhone 12/Pixel 6, audio mix balance approved, QA gate PASS with no blockers |
+
+**Launch Definition of Done**
+- Navigation, tutorial, accessibility, persistence, audio, and analytics systems implemented and passing QA gates.
+- Automated headless suite green (GUT + perf + navigation smoke) and mobile builds generated.
+- UX polish (safe-area layouts, orientation swaps, localized copy) approved by UX reviewer.
+- Telemetry validated via AnalyticsStub export; persistence corruption and recovery scenarios documented.
+
 ## Requirements
 
 ### Functional

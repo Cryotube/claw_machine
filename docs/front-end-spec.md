@@ -65,6 +65,41 @@ graph TD
 
 **Breadcrumb Strategy:** Lightweight text badges (e.g., “Tutorial › Wave 1”, “Score Run › Wave 3”) shown in HUD top bar. Options subpages display parent label (e.g., “Options / Accessibility”) for quick context.
 
+### Screen Specifications
+#### Title Screen (`res://ui/screens/title_screen.tscn`)
+- **Goal:** Introduce brand, provide “Tap to Start”, surface build number and locale toggle shortcut.
+- **Layout:** Centered Start button within 60 px thumb arc in portrait; background penguin animation loops at ≤24 fps.
+- **Interactions:** Tap anywhere advances to Main Menu via `SceneDirector`, skip animation <1.5 s, supports controller “A”.
+
+#### Main Menu (`res://ui/screens/main_menu.tscn`)
+- **Primary Actions:** Start Score Run, Tutorial, Practice, Options, Records.
+- **Layout:** Five tile grid; portrait arranges 2×3 with final tile centered, landscape shifts to horizontal carousel anchored to safe area.
+- **State Hooks:** Each tile emits `menu_action_selected(action_id)`; analytics logs `menu_nav`.
+- **Accessibility:** High-contrast focus outlines, localized labels, controller focus loop order matches reading direction.
+
+#### Pause Overlay (`res://ui/screens/pause_overlay.tscn`)
+- **Structure:** Card with Resume, Restart, Options, Quit buttons + quick toggle row (Haptics, Colorblind, Sensitivity Preset).
+- **Behavior:** Dims session view to 35% opacity, animates in <150 ms, blocks gameplay input via `SceneDirector.lock_input()`.
+- **Safe Area:** Buttons maintain ≥48 px touch targets; quick toggles sit above bottom padding to stay within thumb arc.
+
+#### Options Hub (`res://ui/screens/options_screen.tscn`)
+- **Tabs:** Controls, Audio, Accessibility; each tab accessible within two taps from pause overlay.
+- **Controls Tab:** Camera sensitivity slider (0.5–2.0), invert toggles, tutorial reset button.
+- **Audio Tab:** Master/music/SFX sliders, mute toggle feeding `AudioDirector`.
+- **Accessibility Tab:** Colorblind palette selector, subtitle/haptic toggles, text size adjustments previewed live.
+- **Persistence:** All adjustments immediately serialize via `PersistenceService.queue_save()`.
+
+#### Records Screen (`res://ui/screens/records_screen.tscn`)
+- **Summary Card:** Displays high score, best wave, fastest order time (mm:ss), last run delta.
+- **History List:** Scrollable list of last 10 runs with icons for success/failure cause.
+- **CTA:** “Play Again” primary button, “Share Highlight” secondary (stub).
+- **Localization:** Date/time formats per locale; strings sourced from `LocalizationService`.
+
+#### Game Over Summary (`res://ui/screens/game_over.tscn`)
+- **Structure:** Hero illustration, score recap, lives lost, combo peak, continue button.
+- **Timing:** Auto-advances to Records after 6 s if no input; analytics logs `game_over_shown`.
+- **Accessibility:** Flash effects respect accessibility toggles; colorblind safe palette reused.
+
 ## User Flows
 ### Onboard in Tutorial Playground
 **Player Goal:** Learn claw controls, order flow, and HUD meaning before entering score run.

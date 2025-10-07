@@ -12,17 +12,19 @@ config_version=5
 
 config/name="Claw Machine"
 config/description="Prototype claw machine order queue"
-run/main_scene="res://scenes/session/SessionRoot.tscn"
+run/main_scene="res://ui/navigation_root.tscn"
 config/features=PackedStringArray("4.5")
 
 [autoload]
 
+SceneDirector="*res://autoload/scene_director.gd"
 OrderService="*res://autoload/order_service.gd"
 SignalHub="*res://autoload/signal_hub.gd"
 GameState="*res://autoload/game_state.gd"
 AnalyticsStub="*res://autoload/analytics_stub.gd"
 LocalizationService="*res://autoload/localization_service.gd"
 AudioDirector="*res://autoload/audio_director.gd"
+PersistenceService="*res://autoload/persistence_service.gd"
 Settings="*res://autoload/settings.gd"
 AccessibilityService="*res://autoload/accessibility_service.gd"
 
@@ -90,5 +92,16 @@ claw_move={
 "axis_value": 0.0,
 "device": -1,
 "type": "joy_motion"
+}]
+}
+pause={
+"deadzone": 0.5,
+"events": [{
+"button_index": 11,
+"device": -1,
+"type": "joy_button"
+}, {
+"physical_keycode": 4194305,
+"type": "key"
 }]
 }
