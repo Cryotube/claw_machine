@@ -7,12 +7,14 @@ const OrderBanner := preload("res://scripts/ui/order_banner.gd")
 const PatienceMeter := preload("res://scripts/ui/patience_meter.gd")
 const FailureBanner := preload("res://scripts/ui/failure_banner.gd")
 const WaveProgressPanel := preload("res://scripts/ui/wave_progress_panel.gd")
+const HighScorePanel := preload("res://scripts/ui/high_score_panel.gd")
 
 @onready var _score_panel: SessionScorePanel = %SessionScorePanel
 @onready var _order_banner: OrderBanner = %OrderBanner
 @onready var _patience_meter: PatienceMeter = %PatienceMeter
 @onready var _failure_banner: FailureBanner = %FailureBanner
 @onready var _wave_panel: WaveProgressPanel = %WaveProgressPanel
+@onready var _high_score_panel: HighScorePanel = %HighScorePanel
 
 var _signal_hub: SignalHub
 
@@ -35,6 +37,8 @@ func update_layout(is_portrait: bool, padding: Vector2) -> void:
     if _wave_panel:
         var inset := Vector2(padding.x, padding.y)
         _wave_panel.position = Vector2(inset.x + 32.0, inset.y + 12.0)
+    if _high_score_panel:
+        _high_score_panel.update_safe_area(is_portrait, padding)
 
 func _connect_signals() -> void:
     if _signal_hub == null:

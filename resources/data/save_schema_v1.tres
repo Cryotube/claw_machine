@@ -1,0 +1,6 @@
+[gd_resource type="Resource" format=3 uid="uid://save-schema-v1"]
+
+[resource]
+schema_version = 1
+run_history_limit = 25
+fields = PackedStringArray("tutorial.completed", "tutorial.context", "accessibility.reduced_motion", "accessibility.palette", "controls.*", "audio.*", "runs[].score", "runs[].wave", "runs[].duration_sec", "runs[].failure_reason", "summary.high_score", "summary.previous_high_score", "summary.best_wave", "summary.fastest_duration_sec", "summary.previous_score")

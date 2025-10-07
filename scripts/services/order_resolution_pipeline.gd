@@ -11,10 +11,13 @@ const SceneDirector := preload("res://autoload/scene_director.gd")
 const ComboCurveProfile := preload("res://scripts/resources/combo_curve_profile.gd")
 const WaveScheduleResource := preload("res://scripts/resources/wave_schedule_resource.gd")
 const AnalyticsConfigResource := preload("res://scripts/resources/analytics_config_resource.gd")
+const RunSummaryService := preload("res://scripts/services/run_summary_service.gd")
 
 const COMBO_CURVE_PATH := "res://resources/data/combo_curve.tres"
 const WAVE_SCHEDULE_PATH := "res://resources/data/wave_schedule.tres"
 const ANALYTICS_CONFIG_PATH := "res://resources/data/analytics_config.tres"
+
+@export var run_summary_service_path: NodePath
 
 var _order_service: OrderService
 var _game_state: GameState
@@ -22,6 +25,7 @@ var _signal_hub: SignalHub
 var _analytics: AnalyticsStub
 var _audio: AudioDirector
 var _persistence: PersistenceService
+var _run_summary: RunSummaryService
 var _run_start_time_ms: int = 0
 var _game_over_dispatched: bool = false
 
@@ -40,6 +44,10 @@ func _refresh_references() -> void:
     _analytics = AnalyticsStub.get_instance()
     _audio = AudioDirector.get_instance()
     _persistence = PersistenceService.get_instance()
+    if run_summary_service_path != NodePath():
+        _run_summary = get_node_or_null(run_summary_service_path) as RunSummaryService
+    else:
+        _run_summary = null
 
 func _apply_configuration() -> void:
     _configure_game_state()
@@ -78,6 +86,10 @@ func _configure_game_state() -> void:
         _game_state.configure(options)
     _run_start_time_ms = Time.get_ticks_msec()
     _game_over_dispatched = false
+    if _run_summary:
+        _run_summary.start_run({
+            "lives_remaining": _game_state.get_lives() if _game_state else 0,
+        })
 
 func _configure_analytics() -> void:
     if _analytics == null:
@@ -183,15 +195,23 @@ func _maybe_handle_game_over(state: Dictionary, reason: StringName) -> void:
     _game_over_dispatched = true
     var now_ms := Time.get_ticks_msec()
     var duration_sec := max((now_ms - _run_start_time_ms) / 1000.0, 0.0)
-    var summary := {
-        "score": _game_state.get_score() if _game_state else 0,
-        "wave": int(state.get("wave_index", _game_state.get_wave_index() if _game_state else 0)),
-        "failure_reason": String(reason),
-        "duration_sec": float(duration_sec),
-        "combo_peak": _game_state.get_combo_peak() if _game_state else int(state.get("combo_peak", 0)),
-        "timestamp_sec": Time.get_unix_time_from_system(),
-        "timestamp_ms": now_ms,
-    }
+    var summary: Dictionary
+    if _run_summary:
+        summary = _run_summary.finalize_run({
+            "failure_reason": String(reason),
+            "duration_sec": float(duration_sec),
+        })
+        summary["timestamp_ms"] = now_ms
+    else:
+        summary = {
+            "score": _game_state.get_score() if _game_state else 0,
+            "wave": int(state.get("wave_index", _game_state.get_wave_index() if _game_state else 0)),
+            "failure_reason": String(reason),
+            "duration_sec": float(duration_sec),
+            "combo_peak": _game_state.get_combo_peak() if _game_state else int(state.get("combo_peak", 0)),
+            "timestamp_sec": Time.get_unix_time_from_system(),
+            "timestamp_ms": now_ms,
+        }
     if _persistence and _persistence.has_method("append_run_record"):
         _persistence.append_run_record(summary)
     var director := SceneDirector.get_instance()

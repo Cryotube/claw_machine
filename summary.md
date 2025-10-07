@@ -32,6 +32,13 @@
   3. Conduct performance/QA sweep (device matrix, analytics export, persistence corruption scenarios).  
   4. Partner sign-off prior to release candidate.
 
+## UX Gap Remediation Plan
+1. **Title & Main Menu Polish** – Ship parallax hero art, shimmer, and icon-driven tiles with responsive portrait/landscape layouts, safe-area padding, and reduced-motion fallbacks; ensure focus handling and `menu_nav` analytics match spec.
+2. **Pause & Options Enhancements** – Replace quick toggles with chip controls (icons, state feedback), add open/close easing (skippable under reduced motion), and provide live previews (joystick, palette, subtitles) alongside persistence hooks.
+3. **Records & Game Over Upgrade** – Build metric cards with icons, Play Again/Share CTAs, localized timestamps, and hero art; wire `screen_view`, `records_*`, and `game_over_*` analytics plus reduced-motion aware countdown ring.
+4. **Session HUD & Coaching** – Recompose HUD into spec’d top bar with breadcrumbs and cat reactions, add tutorial assist overlays and wave summary panels that surface contextual guidance across orientation modes.
+5. **Localization, Analytics & Audio Foundations** – Stand up CSV-based localization pipeline, audit UI strings for coverage, expand analytics logging per UX spec, and implement real audio/haptic cues tied to HUD and toggle states.
+
 ## Suggested Next Steps
 1. Kick off Phase 3 (persistence & records) now; land schema updates, Records UI binding, and analytics regression coverage.  
 2. Prepare localization tooling and subtitle renderer groundwork while Phase 3 code reviews run.  

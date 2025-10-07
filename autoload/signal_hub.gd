@@ -26,6 +26,9 @@ signal wave_completed(wave_index: int, summary: Dictionary)
 signal navigation_transition(scene_id: StringName, metadata: Dictionary)
 signal overlay_shown(overlay_id: StringName, metadata: Dictionary)
 signal overlay_hidden(overlay_id: StringName)
+signal run_summary_ready(summary: Dictionary)
+signal high_score_updated(high_score: int, previous_high_score: int)
+signal save_operation_failed(error_code: int, message: String)
 
 static var _instance: Node
 
@@ -106,3 +109,12 @@ func broadcast_overlay_shown(overlay_id: StringName, metadata: Dictionary) -> vo
 
 func broadcast_overlay_hidden(overlay_id: StringName) -> void:
     emit_signal("overlay_hidden", overlay_id)
+
+func broadcast_run_summary(summary: Dictionary) -> void:
+    emit_signal("run_summary_ready", summary.duplicate(true))
+
+func broadcast_high_score_updated(high_score: int, previous_high_score: int) -> void:
+    emit_signal("high_score_updated", high_score, previous_high_score)
+
+func broadcast_save_failed(error_code: int, message: String) -> void:
+    emit_signal("save_operation_failed", error_code, message)

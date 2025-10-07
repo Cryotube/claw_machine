@@ -1,5 +1,5 @@
 
-[gd_scene format=3 load_steps=18 uid="uid://sessionroot"]
+[gd_scene format=3 load_steps=20 uid="uid://sessionroot"]
 
 [ext_resource type="Script" path="res://scripts/gameplay/session_root.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/session/CustomerQueue.tscn" id="2"]
@@ -19,6 +19,8 @@
 [ext_resource type="Resource" path="res://resources/data/wave_config.tres" id="16"]
 [ext_resource type="Resource" path="res://resources/data/order_catalog.tres" id="17"]
 [ext_resource type="PackedScene" path="res://ui/components/TutorialOverlay.tscn" id="18"]
+[ext_resource type="Script" path="res://scripts/ui/high_score_panel.gd" id="19"]
+[ext_resource type="Script" path="res://scripts/services/run_summary_service.gd" id="20"]
 
 [node name="SessionRoot" type="Node3D"]
 script = ExtResource("1")
@@ -125,6 +127,45 @@ size_flags_horizontal = 3
 horizontal_alignment = 2
 text = "0"
 
+[node name="HighScorePanel" type="Control" parent="UI"]
+unique_name_in_owner = true
+script = ExtResource("19")
+anchor_left = 0.68
+anchor_top = 0.02
+anchor_right = 0.94
+anchor_bottom = 0.12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/HighScorePanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 4
+
+[node name="HighRow" type="HBoxContainer" parent="UI/HighScorePanel/VBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="HighLabel" type="Label" parent="UI/HighScorePanel/VBoxContainer/HighRow"]
+text = "High"
+
+[node name="HighValue" type="Label" parent="UI/HighScorePanel/VBoxContainer/HighRow"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+horizontal_alignment = 2
+text = "0"
+
+[node name="DeltaRow" type="HBoxContainer" parent="UI/HighScorePanel/VBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="DeltaLabel" type="Label" parent="UI/HighScorePanel/VBoxContainer/DeltaRow"]
+text = "Delta"
+
+[node name="DeltaValue" type="Label" parent="UI/HighScorePanel/VBoxContainer/DeltaRow"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+horizontal_alignment = 2
+text = "0"
+
 [node name="OrderBanner" parent="UI" instance=ExtResource("3")]
 unique_name_in_owner = true
 
@@ -187,8 +228,13 @@ unique_name_in_owner = true
 script = ExtResource("6")
 order_banner = NodePath("../UI/OrderBanner")
 
+[node name="RunSummaryService" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("20")
+
 [node name="OrderResolutionPipeline" type="Node" parent="."]
 script = ExtResource("10")
+run_summary_service_path = NodePath("../RunSummaryService")
 
 [node name="FailureReactionController" type="Node" parent="."]
 script = ExtResource("12")
