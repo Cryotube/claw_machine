@@ -7,9 +7,10 @@
 - **Settings & Persistence:** `Settings` + `PersistenceService` now persist control/audio/accessibility preferences, options UI surfaces new sliders/toggles, and `AudioDirector` listens for runtime volume updates (`autoload/settings.gd`, `autoload/persistence_service.gd`, `autoload/audio_director.gd`, `scripts/ui/options_screen.gd`).
 - **Analytics Surface:** Expanded analytics spec + implementation for `menu_nav`, `options_adjusted`, `toggle_accessibility` (with context), and practice/game-over events; unit smoke extended to cover `practice` scene (`docs/architecture/analytics-integration.md`, `docs/architecture.md`, `tests/gut/ui/test_scene_director.gd`).
 - **Testing & Docs:** Headless suite passes post-refresh; added UX alignment brief for developer reference (`docs/ux/phase1-ux-refresh.md`).
+- **Phase 3 Story Seeded:** Authored Story 3.5 “Records Persistence & Analytics Hardening” capturing persistence/records/analytics scope and marked Ready for Review (`docs/stories/epic-3-tutorial-and-hud/3.5-records-persistence-and-analytics.md`).
 
 ## Open Items
-1. **Phase 3 – Persistence & Records:** Implement run history/high score persistence, Records UI data binding, and analytics flush verification.  
+1. **Phase 3 – Persistence & Records:** Implement run history/high score persistence, Records UI data binding, and analytics flush verification; Story 3.5 is ready for dev pickup.  
 2. **Phase 4 – Localization & Accessibility polish:** Wire CSV ingestion pipeline, subtitle rendering, caption preview styling, and ensure quick toggles sync across HUD overlays.  
 3. **Phase 5 – Audio/Haptics polish:** Build bus layout, connect gameplay cues, and integrate haptic strength scaling + QA validation.  
 4. **UX assets:** Source final hero art/tiles, iconography, and motion spec for refreshed screens to replace placeholder visuals.  
@@ -17,10 +18,11 @@
 
 ## 1.0 Recovery Plan
 - **Phase 3 – Records & Analytics Hardening**  
-  1. Persist session records/high scores in `PersistenceService`; define schema + migration.  
-  2. Bind Records screen to persisted data (summary metrics, history list, empty state).  
-  3. Add analytics validation tests + scripted replay ensuring `menu_nav`/`game_over_shown` payloads reach stub.  
-  4. Update QA checklist + docs for new persistence behavior.
+  1. Execute Story 3.5 (`docs/stories/epic-3-tutorial-and-hud/3.5-records-persistence-and-analytics.md`) to implement persistence, Records UI binding, and analytics flush workflow.  
+  2. Persist session records/high scores in `PersistenceService`; define schema + migration.  
+  3. Bind Records screen to persisted data (summary metrics, history list, empty state).  
+  4. Add analytics validation tests + scripted replay ensuring `menu_nav`/`game_over_shown` payloads reach stub.  
+  5. Update QA checklist + docs for new persistence behavior.
 - **Phase 4 – Localization & Accessibility**  
   1. Implement CSV ingestion pipeline and hook UI copy to dictionary resources.  
   2. Deliver subtitle renderer + caption size previews; verify reduced-motion + color palettes across HUD/pause/options.  
@@ -40,6 +42,6 @@
 5. **Localization, Analytics & Audio Foundations** – Stand up CSV-based localization pipeline, audit UI strings for coverage, expand analytics logging per UX spec, and implement real audio/haptic cues tied to HUD and toggle states.
 
 ## Suggested Next Steps
-1. Kick off Phase 3 (persistence & records) now; land schema updates, Records UI binding, and analytics regression coverage.  
+1. Assign Story 3.5 to dev/QA, then land schema updates, Records UI binding, and analytics regression coverage.  
 2. Prepare localization tooling and subtitle renderer groundwork while Phase 3 code reviews run.  
 3. Align with audio/haptics owners on asset delivery and QA timelines ahead of Phase 5.
