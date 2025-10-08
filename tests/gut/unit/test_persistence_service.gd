@@ -73,11 +73,11 @@ func test_run_history_appends_and_caps() -> void:
 			"timestamp_sec": 100 + i,
 		})
 	_service.flush_now()
-	var runs := _service.get_run_records()
+	var runs: Array = _service.get_run_records()
 	assert_true(runs.size() <= 25, "Run history should cap at 25 entries")
 	assert_eq(int(runs[0].get("score", -1)), 29, "Most recent run should be first in history")
 	assert_eq(_service.get_run_records(5).size(), 5, "Run history getter should respect limit parameter")
-	var summary := _service.get_records_summary()
+	var summary: Dictionary = _service.get_records_summary()
 	assert_eq(int(summary.get("high_score", -1)), 29, "High score should track maximum score")
 	assert_eq(int(summary.get("previous_high_score", -1)), 28, "Previous high score should capture prior personal best")
 	assert_eq(int(summary.get("best_wave", -1)), 5, "Best wave should track highest wave reached")

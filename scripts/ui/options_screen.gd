@@ -92,7 +92,7 @@ func _populate_caption_items() -> void:
 	for i in range(sizes.size()):
 		var size: StringName = sizes[i]
 		_caption_sizes.append(size)
-		var label := CAPTION_LABELS.get(size, String(size))
+		var label: String = CAPTION_LABELS.get(size, String(size))
 		_caption_size_option.add_item(label, i)
 		_caption_size_option.set_item_metadata(i, size)
 
@@ -180,7 +180,7 @@ func _on_subtitles_toggled(pressed: bool) -> void:
 	_log_accessibility_toggle(StringName("subtitles"), pressed)
 
 func _on_caption_size_selected(index: int) -> void:
-	var metadata := _caption_size_option.get_item_metadata(index)
+	var metadata: Variant = _caption_size_option.get_item_metadata(index)
 	if metadata is StringName:
 		var caption_size: StringName = metadata
 		if _settings:

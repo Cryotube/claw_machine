@@ -52,7 +52,7 @@ func _apply_initial_state() -> void:
 		_set_high_score(0)
 		_set_delta(0)
 		return
-	var summary := persistence.get_records_summary()
+	var summary: Dictionary = persistence.get_records_summary()
 	_apply_summary(summary)
 
 func _on_run_summary(summary: Dictionary) -> void:

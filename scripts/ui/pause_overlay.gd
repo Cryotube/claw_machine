@@ -120,7 +120,7 @@ func _nearest_sensitivity_index(current: float) -> int:
 	var closest_index := 0
 	var best_delta := INF
 	for i in range(SENSITIVITY_PRESETS.size()):
-		var delta := abs(SENSITIVITY_PRESETS[i] - current)
+		var delta: float = abs(SENSITIVITY_PRESETS[i] - current)
 		if delta < best_delta:
 			best_delta = delta
 			closest_index = i

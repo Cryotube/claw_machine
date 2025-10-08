@@ -2,6 +2,7 @@ extends Node
 
 const GutTest = preload("res://tests/gut/gut_stub.gd")
 const TEST_PATHS := [
+    # Unit tests
     "res://tests/gut/unit/test_customer_queue.gd",
     "res://tests/gut/unit/test_order_banner.gd",
     "res://tests/gut/unit/test_cabinet_highlight_controller.gd",
@@ -11,6 +12,15 @@ const TEST_PATHS := [
     "res://tests/gut/unit/test_persistence_service.gd",
     "res://tests/gut/unit/test_tutorial_overlay.gd",
     "res://tests/gut/unit/test_wave_config.gd",
+    # UI tests
+    "res://tests/gut/ui/test_scene_director.gd",
+    "res://tests/gut/ui/test_tutorial_orchestrator.gd",
+    "res://tests/gut/ui/test_title_screen.gd",
+    "res://tests/gut/ui/test_main_menu.gd",
+    "res://tests/gut/ui/test_options_screen.gd",
+    "res://tests/gut/ui/test_pause_overlay.gd",
+    "res://tests/gut/ui/test_records_screen.gd",
+    "res://tests/gut/ui/test_game_over_screen.gd",
 ]
 
 var _total_failures: int = 0

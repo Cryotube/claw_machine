@@ -292,7 +292,7 @@ func _ensure_order_spawned(force: bool = false) -> void:
 		return
 	if force:
 		_order_service.clear_all()
-	var definition := _next_order_definition()
+	var definition: Variant = _next_order_definition()
 	if definition == null:
 		return
 	var dto := OrderRequestDto.new()

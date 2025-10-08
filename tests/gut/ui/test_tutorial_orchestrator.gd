@@ -6,7 +6,7 @@ const Settings := preload("res://autoload/settings.gd")
 const OrderService := preload("res://autoload/order_service.gd")
 const AnalyticsStub := preload("res://autoload/analytics_stub.gd")
 
-var _playground
+var _playground: Node
 
 func before_each() -> void:
 	var settings := Settings.get_instance()
@@ -29,9 +29,9 @@ func test_tutorial_steps_progress_and_complete() -> void:
 	var director := SceneDirector.get_instance()
 	if director == null:
 		return
-	var overlay := _playground.get_node("SessionRoot/UI/TutorialOverlay")
-	var orchestrator := _playground.get_node("TutorialOrchestrator")
-	var claw_input := _playground.get_node("SessionRoot/ClawInputController")
+	var overlay := _playground.get_node("SessionRoot/UI/TutorialOverlay") as TutorialOverlay
+	var orchestrator := _playground.get_node("TutorialOrchestrator") as TutorialOrchestrator
+	var claw_input := _playground.get_node("SessionRoot/ClawInputController") as ClawInputController
 
 	overlay.dismiss_overlay()
 	await wait_frames(5)
@@ -61,7 +61,7 @@ func test_tutorial_steps_progress_and_complete() -> void:
 	assert_true(Settings.get_instance().tutorial_completed, "Tutorial completion flag should be set")
 	var analytics := AnalyticsStub.get_instance()
 	if analytics:
-		var events := analytics.debug_get_events()
+		var events: Array[Dictionary] = analytics.debug_get_events()
 		var step_events: Array[Dictionary] = []
 		for event_entry in events:
 			if event_entry.get("event", StringName()) == StringName("tutorial_step_completed"):

@@ -15,8 +15,8 @@ color = Color(0.101961, 0.058824, 0.14902, 1.0)
 [node name="HeroArt" type="TextureRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 0.6
-expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+expand_mode = 4
+stretch_mode = 7
 modulate = Color(1, 1, 1, 0.85)
 
 [node name="SummaryPanel" type="Panel" parent="."]
@@ -40,13 +40,13 @@ custom_minimum_size = Vector2(0, 48)
 unique_name_in_owner = true
 text = "Summary"
 horizontal_alignment = 1
-autowrap_mode = TextServer.AUTOWRAP_WORD
+autowrap_mode = 1
 
 [node name="CountdownLabel" type="Label" parent="SummaryPanel/VBox"]
 unique_name_in_owner = true
 text = "Auto advancing in 6"
 horizontal_alignment = 1
-add_theme_color_override("font_color", Color(0.894118, 0.870588, 0.956863, 1))
+theme_override_colors/font_color = Color(0.894118, 0.870588, 0.956863, 1)
 
 [node name="ProgressBar" type="TextureProgressBar" parent="SummaryPanel/VBox"]
 unique_name_in_owner = true
