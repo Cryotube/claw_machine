@@ -35,16 +35,14 @@ func test_tutorial_completion_persists_to_disk() -> void:
 	assert_true(tutorial_state.get("completed", false), "Tutorial state should indicate completion")
 	assert_eq(tutorial_state.get("context"), "unit_test", "Context metadata should persist")
 	assert_eq(int(tutorial_state.get("completed_at_ms", 0)), 42, "Completed timestamp should persist")
-	var file: FileAccess = FileAccess.open(_test_path, FileAccess.READ)
-	assert_true(file != null, "Save file should be created on disk")
-	if file:
-		var parsed: Variant = JSON.parse_string(file.get_as_text())
-		assert_true(parsed is Dictionary, "Save file should parse as dictionary")
-		if parsed is Dictionary:
-			var tutorial: Dictionary = parsed.get("tutorial", {})
-			assert_true(tutorial.get("completed", false), "Save data should record completion flag")
-			assert_eq(int(tutorial.get("completed_at_ms", 0)), 42, "Save data should record timestamp")
-			assert_eq(tutorial.get("context"), "unit_test", "Save data should record context string")
+	assert_true(FileAccess.file_exists(_test_path), "Save file should be created on disk")
+	var disk_state: Dictionary = _service.debug_read_disk_state()
+	assert_true(disk_state is Dictionary, "Persisted state should deserialize into dictionary")
+	if disk_state is Dictionary:
+		var tutorial: Dictionary = disk_state.get("tutorial", {})
+		assert_true(tutorial.get("completed", false), "Save data should record completion flag")
+		assert_eq(int(tutorial.get("completed_at_ms", 0)), 42, "Save data should record timestamp")
+		assert_eq(tutorial.get("context"), "unit_test", "Save data should record context string")
 
 func test_reduced_motion_flag_persists() -> void:
 	if _service == null:
@@ -52,14 +50,12 @@ func test_reduced_motion_flag_persists() -> void:
 	_service.set_reduced_motion_enabled(true)
 	_service.flush_now()
 	assert_true(_service.is_reduced_motion_enabled(), "Reduced motion flag should be enabled")
-	var file: FileAccess = FileAccess.open(_test_path, FileAccess.READ)
-	assert_true(file != null, "Save file should exist after reduced motion toggle")
-	if file:
-		var parsed: Variant = JSON.parse_string(file.get_as_text())
-		assert_true(parsed is Dictionary, "Save file should parse as dictionary")
-		if parsed is Dictionary:
-			var accessibility: Dictionary = parsed.get("accessibility", {})
-			assert_true(accessibility.get("reduced_motion", false), "Accessibility state should record reduced motion flag")
+	assert_true(FileAccess.file_exists(_test_path), "Save file should exist after reduced motion toggle")
+	var disk_state: Dictionary = _service.debug_read_disk_state()
+	assert_true(disk_state is Dictionary, "Persisted state should deserialize into dictionary")
+	if disk_state is Dictionary:
+		var accessibility: Dictionary = disk_state.get("accessibility", {})
+		assert_true(accessibility.get("reduced_motion", false), "Accessibility state should record reduced motion flag")
 
 func test_run_history_appends_and_caps() -> void:
 	if _service == null:

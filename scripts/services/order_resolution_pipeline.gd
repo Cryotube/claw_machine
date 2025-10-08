@@ -194,8 +194,8 @@ func _maybe_handle_game_over(state: Dictionary, reason: StringName) -> void:
         return
     _game_over_dispatched = true
     var now_ms := Time.get_ticks_msec()
-    var duration_sec := max((now_ms - _run_start_time_ms) / 1000.0, 0.0)
-    var summary: Dictionary
+    var duration_sec: float = max((now_ms - _run_start_time_ms) / 1000.0, 0.0)
+    var summary: Dictionary = {}
     if _run_summary:
         summary = _run_summary.finalize_run({
             "failure_reason": String(reason),

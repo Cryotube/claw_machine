@@ -180,6 +180,15 @@ func get_records_summary() -> Dictionary:
 func get_save_state() -> Dictionary:
     return _state.duplicate(true)
 
+func debug_read_disk_state() -> Dictionary:
+    var path := _resolve_save_path()
+    if path == "":
+        return {}
+    var data := FileAccess.get_file_as_bytes(path)
+    if data.is_empty():
+        return {}
+    return _deserialize_payload(data)
+
 func _on_flush_timeout() -> void:
     var snapshot: Dictionary
     var dirty := false
@@ -230,14 +239,17 @@ func _write_snapshot(snapshot: Dictionary) -> int:
     tmp_file.flush()
     tmp_file.close()
     var backup_path := _resolve_backup_path()
-    if FileAccess.file_exists(path):
-        var copy_err: int = DirAccess.copy_absolute(path, backup_path)
+    var had_existing := FileAccess.file_exists(path)
+    if had_existing:
+        var copy_err: int = DirAccess.copy_absolute(ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup_path))
         if copy_err != OK:
             push_warning("PersistenceService: failed to copy backup (%d)" % copy_err)
-    var remove_err := DirAccess.remove_absolute(path)
-    if remove_err != OK and remove_err != ERR_DOES_NOT_EXIST:
-        push_warning("PersistenceService: failed to remove old save (%d)" % remove_err)
-    var rename_err := DirAccess.rename_absolute(tmp_path, path)
+    var abs_path := ProjectSettings.globalize_path(path)
+    if had_existing:
+        var remove_err := DirAccess.remove_absolute(abs_path)
+        if remove_err != OK and remove_err != ERR_DOES_NOT_EXIST:
+            push_warning("PersistenceService: failed to remove old save (%d)" % remove_err)
+    var rename_err := DirAccess.rename_absolute(ProjectSettings.globalize_path(tmp_path), abs_path)
     if rename_err != OK:
         return rename_err
     return OK

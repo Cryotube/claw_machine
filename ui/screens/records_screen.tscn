@@ -30,7 +30,7 @@ horizontal_alignment = 1
 [node name="SummaryLabel" type="Label" parent="Panel/VBox"]
 unique_name_in_owner = true
 horizontal_alignment = 1
-autowrap_mode = TextServer.AUTOWRAP_WORD
+autowrap_mode = 1
 
 [node name="HistoryHeader" type="Label" parent="Panel/VBox"]
 text = "Recent Runs"

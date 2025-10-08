@@ -24,7 +24,7 @@ func before_each() -> void:
 	_navigation_events.clear()
 	if _analytics:
 		_analytics.clear_events()
-	_director_connect()
+	director_connect()
 	await director_transition_to(StringName("main_menu"))
 
 func after_each() -> void:

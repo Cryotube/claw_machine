@@ -7,3 +7,8 @@ res://scripts/ui/options_screen.gd
 res://scripts/ui/pause_overlay.gd
 res://tests/gut/ui/test_tutorial_orchestrator.gd
 res://tests/gut/unit/test_persistence_service.gd
+res://autoload/signal_hub.gd
+res://scripts/ui/records_screen.gd
+res://tests/gut/ui/test_main_menu.gd
+res://tests/gut/ui/test_options_screen.gd
+res://tests/gut/ui/test_title_screen.gd
